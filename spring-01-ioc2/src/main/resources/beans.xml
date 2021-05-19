@@ -4,6 +4,14 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
     <beans>
+        <bean id="userDao" class="com.kuang.dao.UserDaoImpl"></bean>
+        <bean id="userDaoOracle" class="com.kuang.dao.UserDaoOrcaleImpl"></bean>
+
+        <bean id="userService" class="com.kuang.service.UserServiceImpl">
+            <constructor-arg name="userDao" ref="userDao" ></constructor-arg>
+
+        </bean>
+
     </beans>
 
 

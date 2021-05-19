@@ -1,5 +1,5 @@
 package com.kuang.service;
 
-public interface UserSevice {
+public interface UserService {
     public void getUser();
 }
