@@ -1,0 +1,33 @@
+idea快捷方式：
+F2或shift+F2：代码错误位置移动
+alt+enter ：  代码错误修改提示
+
+
+ctrl + z:       回滚
+ctrl +shift +z :撤销回滚
+
+alt + insert: 快捷构筑代码
+
+ctrl + y:           删除行
+ctrl + alt + enter: 上方插入空白行
+shit +enter:        下方插入空白行
+
+shift + F6: 快速重命名
+
+alt+~: 
+
+
+Alt + Shift + 前方向键  移动光标所在行向上移动 （必备）
+Alt + Shift + 后方向键  移动光标所在行向下移动 （必备）
+
+Ctrl + Alt + L   格式化代码，可以对当前文件和整个包目录使用 （必备）
+Ctrl + Alt + O   优化导入的类，可以对当前文件和整个包目录使用 （必备）
+Ctrl + Alt + I   光标所在行 或 选中部分进行自动代码缩进，有点类似格式化
+
+修改dumplicate enter lines的快捷键：快速复制几行内容
+
+
+eclipse快捷方式：
+
+ctrl+.代码错误位置移动
+ctrl+1:代码错误修改提示
