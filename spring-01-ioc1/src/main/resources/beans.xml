@@ -4,6 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
     <beans>
+        <!-- 无参数构造方法-->
         <bean id="Hello" class="com.kuang.dao.HelloSpring">
             <property name="name" value="小芳"></property>
 

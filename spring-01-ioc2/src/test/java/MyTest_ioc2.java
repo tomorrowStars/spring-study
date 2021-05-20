@@ -4,6 +4,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class MyTest_ioc2 {
+
+    // 有参构造
     @Test
     public void test001() {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");

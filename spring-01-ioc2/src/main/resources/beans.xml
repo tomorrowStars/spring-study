@@ -6,11 +6,32 @@
     <beans>
         <bean id="userDao" class="com.kuang.dao.UserDaoImpl"></bean>
         <bean id="userDaoOracle" class="com.kuang.dao.UserDaoOrcaleImpl"></bean>
+        <bean id="userDaoMySql" class="com.kuang.dao.UserDaoMySqlImpl"/>
+        <!--设置别名：在获取Bean的时候可以使用别名获取-->
+        <alias name="userDaoMySql" alias="daoMySql"/>
+        <!--
+           id 是bean的标识符,要唯一,如果没有配置id,name就是默认标识符
+           如果配置id,又配置了name,那么name是别名
+           name可以设置多个别名,可以用逗号,分号,空格隔开
+           如果不配置id和name,可以根据applicationContext.getBean(.class)获取对象;
 
+        class是bean的全限定名=包名+类名
+        -->
+        <bean name="userDao2,userDao3 userDao4" class="com.kuang.dao.UserDaoImpl"/>
+
+        <!-- 有参构造方法-->
+        <!--第一种根据index参数下标设置-->
         <bean id="userService" class="com.kuang.service.UserServiceImpl">
-            <constructor-arg name="userDao" ref="userDao" ></constructor-arg>
-
+            <constructor-arg index="0" ref="userDao3"/>
         </bean>
+        <!--        &lt;!&ndash;   第二种根据参数名字设置&ndash;&gt;-->
+        <!--        <bean id="userService" class="com.kuang.service.UserServiceImpl">-->
+        <!--            <constructor-arg name="userDao" ref="userDao"/>-->
+        <!--        </bean>-->
+        <!--        &lt;!&ndash;   第三种根据参数种类type名字设置&ndash;&gt;-->
+        <!--        <bean id="userService" class="com.kuang.service.UserServiceImpl">-->
+        <!--            <constructor-arg type="com.kuang.dao.UserDao" ref="daoMySql"/>-->
+        <!--        </bean>-->
 
     </beans>
 

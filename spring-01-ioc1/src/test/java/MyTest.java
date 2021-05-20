@@ -20,6 +20,7 @@ public class MyTest {
         userService.getUser();
     }
 
+    // 无参数构造方法
     @Test
     public void testIoc003() {
         HelloSpring hello = new HelloSpring();
@@ -27,9 +28,12 @@ public class MyTest {
         hello.sayHello();
     }
 
+    // 无参数构造方法
     @Test
     public void testIoc004() {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        // ClassPathXmlApplicationContext调用时，bean就会被创建
+        //
         HelloSpring hello = context.getBean(HelloSpring.class);
         hello.sayHello();
 
