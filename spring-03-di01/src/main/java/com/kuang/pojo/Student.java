@@ -9,7 +9,7 @@ public class Student {
     private String name;
     private Address address;
     private String[] books;
-    private List<String> hobbys;
+    private List<String> hobbes;
     private Map<String, String> cards;
     private Set<String> games;
     private String wifeName;
@@ -40,12 +40,12 @@ public class Student {
         this.books = books;
     }
 
-    public List<String> getHobbys() {
-        return hobbys;
+    public List<String> getHobbes() {
+        return hobbes;
     }
 
-    public void setHobbys(List<String> hobbys) {
-        this.hobbys = hobbys;
+    public void setHobbes(List<String> hobbes) {
+        this.hobbes = hobbes;
     }
 
     public Map<String, String> getCards() {
@@ -89,26 +89,33 @@ public class Student {
     }
 
     public void show() {
-        System.out.println("name:" + name + ",address:" + address.getAddress() + "Books:[" + getBookNameList());
-        System.out.println("\n爱好:"+hobbys);
-
-        System.out.println("card:"+ cards);
+        System.out.println("Name:" + name + "\nAddress:" + address.getAddress() + "\nBooks:[" + getBookNameList());
+        System.out.println("爱好:"+ hobbes);
 
         System.out.println("games:"+ games);
 
-        System.out.println("wife:"+ wifeName);
+        System.out.println("cards:"+ cards);
 
         System.out.println("info:" + info);
+
+        System.out.println("wife:"+ wifeName);
+
+        System.out.println("婚姻状况：" + (marry ? "已婚" : "未婚"));
     }
 
     private String getBookNameList() {
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < books.length; i++) {
             if (i == 0) {
-                str = str.append(books[0]);
+                str = str.append(books[i]);
             } else {
-                str = str.append(",").append(books[0]);
+                str = str.append(",").append(books[i]);
             }
+
+            if (i==books.length -1) {
+                str = str.append("]");
+            }
+
         }
         return str.toString();
     }

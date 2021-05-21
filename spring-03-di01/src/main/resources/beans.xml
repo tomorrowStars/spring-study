@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!--    // set注入（★★）-->
+    <bean id="address" class="com.kuang.pojo.Address" >
+        <!-- 1,常量设值-->
+        <property name="address" value="中国上海"/>
+    </bean>
+    <bean id="student" class="com.kuang.pojo.Student">
+        <!-- 1,常量设值-->
+        <property name="name" value="小明"/>
+
+        <!-- 2、Bean注入 -->
+        <property name="address" ref="address"/>
+
+        <!-- 3、数组注入 -->
+        <property name="books">
+            <array>
+                <value>西游记</value>
+                <value>水浒传</value>
+                <value>三国演义</value>
+                <value>红楼梦</value>
+            </array>
+        </property>
+
+        <!-- 4,list注入-->
+        <property name="hobbes">
+            <list>
+                <value>自行车</value>
+                <value>游泳</value>
+                <value>读书</value>
+            </list>
+        </property>
+
+        <!-- 5, set注入-->
+        <property name="games">
+            <set>
+                <value>lol</value>
+                <value>wot</value>
+                <value>dnf</value>
+            </set>
+        </property>
+
+        <!-- 6,map注入-->
+        <property name="cards">
+            <map>
+                <entry key="中国银行" value="1230001"></entry>
+                <entry key="建设银行" value="1230002"></entry>
+                <entry key="农业银行" value="1230003"></entry>
+            </map>
+        </property>
+        
+        <!-- 7,Properties注入-->
+        <property name="info">
+            <props>
+                <prop key="学号">xh123001</prop>
+                <prop key="性别">男</prop>
+                <prop key="姓名">小明</prop>
+            </props>
+        </property>
+
+        <!-- 8, NULL注入-->
+        <property name="wifeName">
+            <null></null>
+        </property>
+
+        <!-- 9,Boolean常量设值-->
+        <property name="marry" value="false"/>
+
+
+    </bean>
+</beans>
