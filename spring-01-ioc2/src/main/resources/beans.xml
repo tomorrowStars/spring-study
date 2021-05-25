@@ -24,14 +24,14 @@
         <bean id="userService" class="com.kuang.service.UserServiceImpl">
             <constructor-arg index="0" ref="userDao3"/>
         </bean>
-        <!--        &lt;!&ndash;   第二种根据参数名字设置&ndash;&gt;-->
-        <!--        <bean id="userService" class="com.kuang.service.UserServiceImpl">-->
-        <!--            <constructor-arg name="userDao" ref="userDao"/>-->
-        <!--        </bean>-->
-        <!--        &lt;!&ndash;   第三种根据参数种类type名字设置&ndash;&gt;-->
-        <!--        <bean id="userService" class="com.kuang.service.UserServiceImpl">-->
-        <!--            <constructor-arg type="com.kuang.dao.UserDao" ref="daoMySql"/>-->
-        <!--        </bean>-->
+        <!--   第二种根据参数名字设置-->
+<!--        <bean id="userService" class="com.kuang.service.UserServiceImpl">-->
+<!--            <constructor-arg name="userDao" ref="userDao"/>-->
+<!--        </bean>-->
+        <!--   第三种根据参数种类type名字设置-->
+<!--        <bean id="userService" class="com.kuang.service.UserServiceImpl">-->
+<!--            <constructor-arg type="com.kuang.dao.UserDao" ref="daoMySql"/>-->
+<!--        </bean>-->
 
     </beans>
 

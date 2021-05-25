@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--(一)、C、P命名空间注入（★★）-->
+    <!-- (C命名空间注入)-->
+    <bean id="teacher" class="com.kuang.pojo.Teacher" c:id="2001" c:name="lll" c:age="33" scope="singleton" />
 
-<!--    // set注入（★★）-->
-    <bean id="address" class="com.kuang.pojo.Address" >
-        <!-- 1,常量设值-->
-        <property name="address" value="中国上海"/>
+    <!-- (P命名空间注入)-->
+    <bean id="address" class="com.kuang.pojo.Address" p:address="中国上海" p:zipCode="200101" scope="prototype"/>
+
+<!--(二)、set注入（★★）-->
+    <bean id="address1" class="com.kuang.pojo.Address">
+        <constructor-arg index="0" value="250101"/>
+        <constructor-arg index="1" value="中国北京"/>
     </bean>
+
     <bean id="student" class="com.kuang.pojo.Student">
         <!-- 1,常量设值-->
         <property name="name" value="小明"/>
-
-        <!-- 2、Bean注入 -->
-        <property name="address" ref="address"/>
 
         <!-- 3、数组注入 -->
         <property name="books">
@@ -68,7 +75,8 @@
 
         <!-- 9,Boolean常量设值-->
         <property name="marry" value="false"/>
-
-
     </bean>
+
+
+
 </beans>
