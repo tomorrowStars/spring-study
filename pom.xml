@@ -12,6 +12,8 @@
         <module>spring-01-ioc1</module>
         <module>spring-01-ioc2</module>
         <module>spring-03-di01</module>
+        <module>spring-04-autowired-01</module>
+        <module>spring-05-autowired-02</module>
     </modules>
 
     <dependencies>
