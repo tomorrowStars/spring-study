@@ -56,7 +56,7 @@ int deleteUser(int id);
 mapper文件，我们故意把 deletes 写错，测试！
 
 ```
-<insert id="addUser" parameterType="com.kuang.pojo.User">
+<insert id="addUser" parameterType="com.User">
 insert into user (id,name,pwd) values (#{id},#{name},#{pwd})
 </insert>
 

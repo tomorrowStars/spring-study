@@ -178,7 +178,7 @@ public class User {
       xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-   <bean id="user" class="com.kuang.pojo.User">
+   <bean id="user" class="com.User">
        <property name="name" value="kuangshen"/>
    </bean>
 

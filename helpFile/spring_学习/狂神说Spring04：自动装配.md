@@ -75,10 +75,10 @@ public class User {
       xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-   <bean id="dog" class="com.kuang.pojo.Dog"/>
-   <bean id="cat" class="com.kuang.pojo.Cat"/>
+   <bean id="dog" class="com.Dog"/>
+   <bean id="cat" class="com.Cat"/>
 
-   <bean id="user" class="com.kuang.pojo.User">
+   <bean id="user" class="com.User">
        <property name="cat" ref="cat"/>
        <property name="dog" ref="dog"/>
        <property name="str" value="qinjiang"/>
@@ -119,7 +119,7 @@ byName和byType自动装配
 1、修改bean配置，增加一个属性  autowire="byName"
 
 ```
-<bean id="user" class="com.kuang.pojo.User" autowire="byName">
+<bean id="user" class="com.User" autowire="byName">
    <property name="str" value="qinjiang"/>
 </bean>
 ```
@@ -161,11 +161,11 @@ NoUniqueBeanDefinitionException
 3、在注册一个cat 的bean对象！
 
 ```
-<bean id="dog" class="com.kuang.pojo.Dog"/>
-<bean id="cat" class="com.kuang.pojo.Cat"/>
-<bean id="cat2" class="com.kuang.pojo.Cat"/>
+<bean id="dog" class="com.Dog"/>
+<bean id="cat" class="com.Cat"/>
+<bean id="cat2" class="com.Cat"/>
 
-<bean id="user" class="com.kuang.pojo.User" autowire="byType">
+<bean id="user" class="com.User" autowire="byType">
    <property name="str" value="qinjiang"/>
 </bean>
 ```
@@ -235,9 +235,9 @@ public class User {
 ```
 <context:annotation-config/>
 
-<bean id="dog" class="com.kuang.pojo.Dog"/>
-<bean id="cat" class="com.kuang.pojo.Cat"/>
-<bean id="user" class="com.kuang.pojo.User"/>
+<bean id="dog" class="com.Dog"/>
+<bean id="cat" class="com.Cat"/>
+<bean id="user" class="com.User"/>
 ```
 
 3、测试，成功输出结果！
@@ -264,10 +264,10 @@ private Cat cat;
 1、配置文件修改内容，保证类型存在对象。且名字不为类的默认名字！
 
 ```
-<bean id="dog1" class="com.kuang.pojo.Dog"/>
-<bean id="dog2" class="com.kuang.pojo.Dog"/>
-<bean id="cat1" class="com.kuang.pojo.Cat"/>
-<bean id="cat2" class="com.kuang.pojo.Cat"/>
+<bean id="dog1" class="com.Dog"/>
+<bean id="dog2" class="com.Dog"/>
+<bean id="cat1" class="com.Cat"/>
+<bean id="cat2" class="com.Cat"/>
 ```
 
 2、没有加Qualifier测试，直接报错
@@ -310,11 +310,11 @@ public class User {
 beans.xml
 
 ```
-<bean id="dog" class="com.kuang.pojo.Dog"/>
-<bean id="cat1" class="com.kuang.pojo.Cat"/>
-<bean id="cat2" class="com.kuang.pojo.Cat"/>
+<bean id="dog" class="com.Dog"/>
+<bean id="cat1" class="com.Cat"/>
+<bean id="cat2" class="com.Cat"/>
 
-<bean id="user" class="com.kuang.pojo.User"/>
+<bean id="user" class="com.User"/>
 ```
 
 测试：结果OK
@@ -322,8 +322,8 @@ beans.xml
 配置文件2：beans.xml ， 删掉cat2
 
 ```
-<bean id="dog" class="com.kuang.pojo.Dog"/>
-<bean id="cat1" class="com.kuang.pojo.Cat"/>
+<bean id="dog" class="com.Dog"/>
+<bean id="cat1" class="com.Cat"/>
 ```
 
 实体类上只保留注解
