@@ -2,7 +2,7 @@ package com.kuang.pojo;
 
 import org.springframework.stereotype.Component;
 
-@Component("cat1")
+@Component
 public class Cat extends Animal {
     private String name = "little cat";
 //    @Nullable

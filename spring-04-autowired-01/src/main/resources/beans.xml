@@ -3,8 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean id="cat" class="com.Cat"/>
-    <bean id="dog" class="com.Dog"/>
+
+    <bean id="cat" class="com.kuang.pojo.Cat"/>
+    <bean id="dog" class="com.kuang.pojo.Dog"/>
 
 <!--常规注入方式-->
     <!--<bean id="user" class="com.User">
@@ -16,13 +17,13 @@
 <!-- (一)按名称自动装配autowire byName
      将查找其类中所有的set方法名，例如setCat，获得将set去掉并且首字母小写的字符串，即cat。
      -->
-    <bean id="user2" class="com.User" autowire="byName">
+    <bean id="user2" class="com.kuang.pojo.User" autowire="byName">
         <property name="name" value="小芳"/>
     </bean>
 <!--(二) 按照类型自动装配autowire byType
     使用autowire byType首先需要保证：同一类型的对象，在spring容器中唯一。【如果不唯一，会报不唯一的异常】。
     -->
-    <bean id="user3" class="com.User" autowire="byType">
+    <bean id="user3" class="com.kuang.pojo.User" autowire="byType">
         <property name="name" value="小芳"/>
     </bean>
 

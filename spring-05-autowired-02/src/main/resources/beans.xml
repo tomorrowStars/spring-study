@@ -11,16 +11,16 @@
     <context:annotation-config/>
 
    <!-- @Autowired是按类型自动转配的，不按id匹配。-->
-    <bean id="cat111" class="com.Cat"/>
+    <bean id="cat111" class="com.kuang.pojo.Cat"/>
 <!--    没有和 注入类型名【cat】一致的id的bean时， 不能定义多个该类型的bean，加上@Qualifier则可以-->
 <!--    <bean id="cat22" class="com.Cat"/>-->
 
 <!--    加上@Qualifier则可以根据byName的方式自动装配-->
-    <bean id="dog11" class="com.Dog"/>
-    <bean id="dog22" class="com.Dog"/>
-    <bean id="rabbit" class="com.Rabbit"/>
+    <bean id="dog11" class="com.kuang.pojo.Dog"/>
+    <bean id="dog22" class="com.kuang.pojo.Dog"/>
+    <bean id="rabbit" class="com.kuang.pojo.Rabbit"/>
 
-    <bean id="user" class="com.User"/>
-    <bean id="user2" class="com.User2"/>
+    <bean id="user" class="com.kuang.pojo.User"/>
+    <bean id="user2" class="com.kuang.pojo.User2"/>
 
 </beans>

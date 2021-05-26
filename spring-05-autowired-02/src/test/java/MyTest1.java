@@ -1,13 +1,18 @@
 import com.kuang.pojo.User;
 import com.kuang.pojo.User2;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class MyTest1 {
+    @Before
+    public void beforeTest() {
+        System.out.println("=========");
+    }
 
     /**
-     * java中 @autowired + xml 自动注入
+     * java中 【@autowired 】+ xml:    <context:annotation-config/> 自动注入
      * @Qualifier 别名的用法
      */
     @Test
@@ -20,7 +25,7 @@ public class MyTest1 {
     }
 
     /**
-     * java中 @resource + xml 自动注入
+     * java中【 @resource 】 + xml:  <context:annotation-config/> 自动注入
      *
      */
     @Test
