@@ -3,13 +3,15 @@ package com.kuang.pojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
+@Component
 public class User {
     @Autowired
+//    @Qualifier("cat1") // 有别名则用别名匹配，没有别名则用对象类型匹配
     private Cat cat;
 
-    @Qualifier(value = "dog22")
-    @Autowired
+    @Autowired(required = false)
     private Dog dog;
 
     // @Autowired(required=false)  说明：false，对象可以为null；true，对象必须存对象，不能为null。
@@ -19,28 +21,14 @@ public class User {
 
     @Value("111")
     private String name;
-//
-//    public void setCat(Cat cat) {
-//        this.cat = cat;
-//    }
-//
-//    public void setDog(Dog dog) {
-//        this.dog = dog;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
 
-    public Cat getCat() {
-        return cat;
-    }
-
-    public Dog getDog() {
-        return dog;
-    }
-
-    public String getName() {
-        return name;
+    @Override
+    public String toString() {
+        return "User{" +
+                "cat=" + cat +
+                ", dog=" + dog +
+                ", sheep=" + sheep +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

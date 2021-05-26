@@ -4,33 +4,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 
-public class User {
-    @Autowired
+import javax.annotation.Resource;
+
+public class User2 {
+
+    // 1,默认的byName方式进行装配；
+    // 2,不成功，则按byType的方式自动装配
+    // 3,@Resource如有指定的name属性，先按该属性进行byName方式查找装配；
+    @Resource
+    private Rabbit rabbit;
+
+    @Resource
     private Cat cat;
 
-    @Qualifier(value = "dog22")
-    @Autowired
+
+    @Resource(name = "dog11")
     private Dog dog;
 
     // @Autowired(required=false)  说明：false，对象可以为null；true，对象必须存对象，不能为null。
     // xml 中没有定义对应类型的bean
-    @Autowired(required = false)
     private Sheep sheep;
 
-    @Value("111")
+    @Value("222")
     private String name;
-//
-//    public void setCat(Cat cat) {
-//        this.cat = cat;
-//    }
-//
-//    public void setDog(Dog dog) {
-//        this.dog = dog;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
 
     public Cat getCat() {
         return cat;
@@ -42,5 +38,13 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public Rabbit getRabbit() {
+        return rabbit;
+    }
+
+    public Sheep getSheep() {
+        return sheep;
     }
 }
