@@ -1,4 +1,4 @@
-## 狂神说Spring06：静态/动态代理模式
+**狂神说Spring06：静态/动态代理模式**
 
 秦疆 [狂神说](javascript:void(0);) *2020-04-21*
 
@@ -10,7 +10,7 @@
 
 
 
-代理模式
+# 代理模式
 
 为什么要学习代理模式，因为AOP的底层机制就是动态代理！
 
@@ -25,7 +25,7 @@
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7LoeicP1O2nfyA6H0XPa9jMLRnfS7LpO0Iic7fEEPFCgRs0ggNXCwf6IKo1tibjPmNSTEYeII5ro7YLQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
-> #### 静态代理
+# 静态代理
 
 **静态代理角色分析**
 
@@ -121,7 +121,7 @@ public class Client {
 
 我们想要静态代理的好处，又不想要静态代理的缺点，所以 , 就有了动态代理 !
 
-
+# 静态代理再理解
 
 > #### 静态代理再理解
 
@@ -235,7 +235,13 @@ OK，到了现在代理模式大家应该都没有什么问题了，重点大家
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7LoeicP1O2nfyA6H0XPa9jMLJqcgicA5aEKtxYibgLPicNfDwicKIn9NlFl86rriaVRicKnEXlPNiacbHiaLibw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
-> #### 动态代理
+
+
+
+
+# 动态代理
+
+## 动态代理
 
 - 动态代理的角色和静态代理的一样 .
 
@@ -248,11 +254,11 @@ OK，到了现在代理模式大家应该都没有什么问题了，重点大家
   - 现在用的比较多的是 javasist 来生成动态代理 . 百度一下javasist
   - 我们这里使用JDK的原生代码来实现，其余的道理都是一样的！、
 
-**JDK的动态代理需要了解两个类**
+## **JDK的动态代理需要了解两个类**
 
-核心 : InvocationHandler   和   Proxy  ， 打开JDK帮助文档看看
+核心 :`InvocationHandler `  和  ` Proxy  `， 打开JDK帮助文档看看
 
-【InvocationHandler：调用处理程序】
+**【`InvocationHandler`：调用处理程序】**
 
 
 
@@ -266,7 +272,7 @@ Object invoke(Object proxy, 方法 method, Object[] args)；
 //args -包含的方法调用传递代理实例的参数值的对象的阵列，或null如果接口方法没有参数。原始类型的参数包含在适当的原始包装器类的实例中，例如java.lang.Integer或java.lang.Boolean 。
 ```
 
-【Proxy  : 代理】
+**【Proxy  : 代理】**
 
 
 
@@ -286,11 +292,11 @@ public Object getProxy(){
 }
 ```
 
-**代码实现** 
+## **代码实现** 
 
 抽象角色和真实角色和之前的一样！
 
-Rent . java 即抽象角色
+`Rent . java` 即抽象角色
 
 ```
 //抽象角色：租房
@@ -299,7 +305,7 @@ public interface Rent {
 }
 ```
 
-Host . java 即真实角色
+`Host . java` 即真实角色
 
 ```
 //真实角色: 房东，房东要出租房子
@@ -310,7 +316,7 @@ public class Host implements Rent{
 }
 ```
 
-ProxyInvocationHandler. java 即代理角色
+`ProxyInvocationHandler. java` 即代理角色
 
 ```
 public class ProxyInvocationHandler implements InvocationHandler {
@@ -372,7 +378,7 @@ public class Client {
 
 
 
-> #### 深化理解
+## 深化理解
 
 我们来使用动态代理实现代理我们后面写的UserService！
 

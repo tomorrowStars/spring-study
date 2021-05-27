@@ -1,4 +1,7 @@
 idea快捷方式：
+
+
+
 F2或shift+F2：代码错误位置移动
 alt+enter ：  代码错误修改提示
 
@@ -25,6 +28,12 @@ Ctrl + Alt + O   优化导入的类，可以对当前文件和整个包目录使
 Ctrl + Alt + I   光标所在行 或 选中部分进行自动代码缩进，有点类似格式化
 
 修改dumplicate enter lines的快捷键：快速复制几行内容
+
+搜索 new ，修改 java class的快捷键： 快速创建java文件，class文件
+
+
+
+
 
 
 eclipse快捷方式：
