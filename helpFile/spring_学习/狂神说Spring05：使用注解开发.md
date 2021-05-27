@@ -225,7 +225,9 @@ public class UserService {
 
 我们一般把`@Autowired`写在字段上，通常使用package权限的字段，便于测试。
 
-最后，编写一个`AppConfig`类启动容器：
+**最后，**
+
+### **编写一个`AppConfig`类启动容器：**
 
 ```java
 @Configuration
@@ -239,6 +241,8 @@ public class AppConfig {
     }
 }
 ```
+
+
 
 除了`main()`方法外，`AppConfig`标注了`@Configuration`，表示它是一个配置类，因为我们创建`ApplicationContext`时：
 
@@ -339,26 +343,80 @@ public void test2(){
 
 ```java
 @Configuration  //代表这是一个配置类
-public class MyConfig2 {
+//@Component
+public class MyConfig {
+
+    /**
+     * 创建第三方bean
+     */
+    @Bean
+    public Dog dog() {
+        return new Dog();
+    }
+    @Bean
+    public Cat cat() {
+        return new Cat();
+    }
+
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
+        Dog dog = context.getBean(Dog.class);
+        dog.shout();
+    }
+
 }
+
 ```
 
 2、在之前的配置类中我们来选择导入这个配置类
 
 ```java
 @Configuration
-@Import(MyConfig2.class)  //导入合并其他配置类，类似于配置文件中的 inculde 标签
-public class MyConfig {
+@Import(MyConfig.class)  // 导入合并其他配置类，类似于配置文件中的 inculde 标签
+public class MyConfig2 {
 
-   @Bean
-   public Dog dog(){
-       return new Dog();
-  }
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
+        Cat cat = context.getBean(Cat.class);
+        cat.run();
+    }
+}
 
+```
+
+关于这种Java类的配置方式，我们在之后的`SpringBoot `和 `SpringCloud`中还会大量看到，我们需要知道这些注解的作用即可！
+
+
+
+## 4、也可以在其他的类中调用 `AppConfig,MyAppConfig`的类
+
+```java
+public class MyTest {
+
+    @Test
+    public void test01() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        Dog dog = context.getBean("dog", Dog.class);
+        Cat cat = context.getBean(Cat.class);
+        cat.run();
+        dog.shout();
+
+    }
+    
+    @Test
+    public void test02() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
+        Dog dog = context.getBean("dog", Dog.class);
+        Cat cat = context.getBean(Cat.class);
+        cat.run();
+        dog.shout();
+    }
 }
 ```
 
-关于这种Java类的配置方式，我们在之后的SpringBoot 和 SpringCloud中还会大量看到，我们需要知道这些注解的作用即可！
+
+
+
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7JicnvW4708YZgXPQAcr3JTia8Y39JMY2G6jbR5C8NP2ecF7ocDpwNU2XeCHKga62ToC8SKrbGnJRiaw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
