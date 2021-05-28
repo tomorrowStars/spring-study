@@ -258,7 +258,7 @@ OK，到了现在代理模式大家应该都没有什么问题了，重点大家
 
 核心 :`InvocationHandler `  和  ` Proxy  `， 打开JDK帮助文档看看
 
-**【`InvocationHandler`：调用处理程序】**
+### **【`InvocationHandler`：调用处理程序】**
 
 
 
@@ -272,7 +272,39 @@ Object invoke(Object proxy, 方法 method, Object[] args)；
 //args -包含的方法调用传递代理实例的参数值的对象的阵列，或null如果接口方法没有参数。原始类型的参数包含在适当的原始包装器类的实例中，例如java.lang.Integer或java.lang.Boolean 。
 ```
 
-**【Proxy  : 代理】**
+
+
+### 【`Method.invoke` 方法】
+
+> ```
+> public Object invoke(Object obj, Object... args) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+> ```
+>
+> 在具有指定参数的指定对象上调用此`方法`对象表示的基础方法。 各个参数自动展开以匹配原始形式参数，并且原始参数和参考参数都根据需要进行方法调用转换。
+>
+> 如果基础方法是静态的，则忽略指定的`obj`参数。 它可能为空。
+>
+> 如果基础方法所需的形式参数的数量为0，则提供的`args`数组的长度可以为0或null。
+>
+> 如果底层方法是实例方法，则使用动态方法查找调用它，如Java语言规范第15.12.4.4节中所述; 特别地，可能发生基于目标对象的运行时类型的覆盖。
+>
+> 如果底层方法是静态的，则声明该方法的类如果尚未初始化则初始化。
+>
+> 如果方法正常完成，则返回的值返回给invoke的调用者; 如果值具有基本类型，则首先将其适当地包装在对象中。 但是，如果值具有基本类型数组的类型，则数组的元素*不会*包装在对象中; 换句话说，返回一个原始类型的数组。 如果底层方法返回类型为void，则调用返回null。
+>
+> - **参数**
+>
+>   `obj` - 从中调用基础方法的对象
+>
+>   `args` - 用于方法调用的参数
+>
+> - **结果**
+>
+>   调度此对象表示的方法的结果在 `obj` ，参数为 `args`
+
+
+
+### **【Proxy  : 代理】**
 
 
 
@@ -284,13 +316,17 @@ Object invoke(Object proxy, 方法 method, Object[] args)；
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7LoeicP1O2nfyA6H0XPa9jML394CqGFmCP1nUlaU9mdLk19o1qIzjicTgDiaPz7ibR371jAo3uNNQ8Qgw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
-```
+```java
 //生成代理类
 public Object getProxy(){
    return Proxy.newProxyInstance(this.getClass().getClassLoader(),
                                  rent.getClass().getInterfaces(),this);
 }
 ```
+
+
+
+
 
 ## **代码实现** 
 
@@ -307,7 +343,7 @@ public interface Rent {
 
 `Host . java` 即真实角色
 
-```
+```java
 //真实角色: 房东，房东要出租房子
 public class Host implements Rent{
    public void rent() {
@@ -318,7 +354,7 @@ public class Host implements Rent{
 
 `ProxyInvocationHandler. java` 即代理角色
 
-```
+```java
 public class ProxyInvocationHandler implements InvocationHandler {
    private Rent rent;
 
@@ -328,6 +364,7 @@ public class ProxyInvocationHandler implements InvocationHandler {
 
    //生成代理类，重点是第二个参数，获取要代理的抽象角色！之前都是一个角色，现在可以代理一类角色
    public Object getProxy(){
+	   // 返回指定接口的代理实例，该接口将方法调用分派给指定的调用处理程序。
        return Proxy.newProxyInstance(this.getClass().getClassLoader(),
                rent.getClass().getInterfaces(),this);
   }
@@ -357,7 +394,7 @@ public class ProxyInvocationHandler implements InvocationHandler {
 
 Client . java
 
-```
+```java
 //租客
 public class Client {
 
@@ -369,10 +406,16 @@ public class Client {
        pih.setRent(host); //将真实角色放置进去！
        Rent proxy = (Rent)pih.getProxy(); //动态生成对应的代理类！
        proxy.rent();
+              
+        // 【getProxy()此处必须强转成接口，如用实例类型会报错】
   }
 
 }
 ```
+
+**【`getProxy()`此处必须强转成接口，如用实例类型会报错】**
+
+
 
 核心：**一个动态代理 , 一般代理某一类业务 , 一个动态代理可以代理多个类，代理的是接口！、**
 
@@ -415,7 +458,7 @@ public class ProxyInvocationHandler implements InvocationHandler {
 
 测试！
 
-```
+```java
 public class Test {
    public static void main(String[] args) {
        //真实对象
@@ -423,6 +466,7 @@ public class Test {
        //代理对象的调用处理程序
        ProxyInvocationHandler pih = new ProxyInvocationHandler();
        pih.setTarget(userService); //设置要代理的对象
+//       【`getProxy()`此处必须强转成接口，如用实例类型会报错】
        UserService proxy = (UserService)pih.getProxy(); //动态生成代理类！
        proxy.delete();
   }
