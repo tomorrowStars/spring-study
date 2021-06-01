@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class MyConfig {
 
     /**
-     * 创建第三方bean
+     * 创建第三方bean,与config类不在同一包以及它的子包内的 时候，用这种方法
      */
     @Bean
     public Dog dog() {

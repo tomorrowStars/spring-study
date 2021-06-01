@@ -1,8 +1,10 @@
+import com.kuang.controller.UserController;
 import com.kuang.dao.UserDao;
 import com.kuang.pojo.Animal;
 import com.kuang.pojo.Cat;
 import com.kuang.pojo.Rabbit;
 import com.kuang.pojo.User;
+import com.kuang.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -39,6 +41,7 @@ public class MyTest {
 
     /**
      * @Component
+     * 属性上追加 @Qualifier("cat1") // 有别名则用别名匹配，没有别名则用对象类型匹配
      */
     @Test
     public void test003(){
@@ -49,12 +52,17 @@ public class MyTest {
 
     /**
      * 衍生注解 【@Controller：web层 】【@Service层】【 @Repository：dao层】
+     * @Scope(value = "prototype") : 作用域 非单例模式 用prototype
      */
     @Test
     public void test004(){
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
         UserDao userDao = context.getBean("userDao", UserDao.class);
         UserDao userDao1 = context.getBean("userDao", UserDao.class);
-        System.out.println(userDao == userDao1);
+        System.out.println(userDao == userDao1);  // false
+
+
+        UserController controller = context.getBean("userController", UserController.class);
+        controller.addUser();
     }
 }

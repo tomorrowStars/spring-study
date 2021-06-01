@@ -20,6 +20,7 @@
         <module>spring-09-proxy-02</module>
         <module>spring-10-aop-01</module>
         <module>spring-11-aop-02</module>
+        <module>spring-11-mybatis-01</module>
     </modules>
 
     <dependencies>
@@ -38,11 +39,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.20</version>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.9.6</version>
         </dependency>
     </dependencies>
 

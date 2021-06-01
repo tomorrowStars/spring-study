@@ -1,11 +1,17 @@
 package com.kuang.service;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserServiceImpl implements UserService {
 
     public int add() {
         System.out.println("增加了一个用户");
         return 10;
     }
+//    public void add() {
+//        System.out.println("增加了一个用户");
+//    }
 
     public void delete() {
         System.out.println("删除了一个用户");

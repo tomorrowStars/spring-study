@@ -43,7 +43,7 @@ Spring的自动装配需要从两个角度来实现，或者说是两个操作�
 
 2、新建两个实体类，Cat  Dog  都有一个叫的方法
 
-```
+```java
 public class Cat {
    public void shout() {
        System.out.println("miao~");
@@ -58,7 +58,7 @@ public class Dog {
 
 3、新建一个用户类 User
 
-```
+```java
 public class User {
    private Cat cat;
    private Dog dog;
@@ -68,7 +68,7 @@ public class User {
 
 4、编写Spring配置文件
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -88,7 +88,7 @@ public class User {
 
 5、测试
 
-```
+```java
 public class MyTest {
    @Test
    public void testMethodAutowire() {
@@ -102,7 +102,7 @@ public class MyTest {
 
 结果正常输出，环境OK
 
-## 在xml中显式配置；
+## 方式1，在xml中显式配置；
 
 byName和byType自动装配
 
@@ -118,7 +118,7 @@ byName和byType自动装配
 
 1、修改bean配置，增加一个属性  autowire="byName"
 
-```
+```xml
 <bean id="user" class="com.User" autowire="byName">
    <property name="str" value="qinjiang"/>
 </bean>
@@ -160,7 +160,7 @@ NoUniqueBeanDefinitionException
 
 3、在注册一个cat 的bean对象！
 
-```
+```xml
 <bean id="dog" class="com.Dog"/>
 <bean id="cat" class="com.Cat"/>
 <bean id="cat2" class="com.Cat"/>
@@ -176,7 +176,7 @@ NoUniqueBeanDefinitionException
 
 这就是按照类型自动装配！
 
-## 在java中显式配置；使用注解
+## 方式2， 在java中显式配置；使用注解
 
 > 使用注解
 
@@ -195,7 +195,7 @@ http://www.springframework.org/schema/context/spring-context.xsd
 
 2、开启属性注解支持！
 
-```
+```xml
 <context:annotation-config/>
 ```
 
