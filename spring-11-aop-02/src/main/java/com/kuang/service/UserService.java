@@ -1,7 +1,7 @@
 package com.kuang.service;
 
 public interface UserService {
-    public int add();
+    public Integer add();
     public void delete();
     public void update();
     public void search();

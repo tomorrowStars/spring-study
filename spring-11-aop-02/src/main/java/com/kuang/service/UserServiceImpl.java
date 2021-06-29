@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserServiceImpl implements UserService {
 
-    public int add() {
+    public Integer add() {
         System.out.println("增加了一个用户");
         return 10;
     }

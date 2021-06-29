@@ -6,8 +6,9 @@ public class UserServiceImpl implements UserService {
         System.out.println("增加了一个用户");
     }
 
-    public void delete() {
+    public int delete() {
         System.out.println("删除了一个用户");
+        return 200;
 
     }
 

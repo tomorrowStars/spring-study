@@ -2,12 +2,20 @@ package com.kuang.service;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 
 @Aspect
+@EnableAspectJAutoProxy // 方式四：可以代替xml中的<aop:aspectj-autoproxy/>
 @Component
 public class AnnotationPointcut {
-    @Before("execution(* com.kuang.service.UserServiceImpl.*(..))")
+
+    // 自定义多个切入点可以重复利用
+    @Pointcut(value = "execution(* com.kuang.service.UserServiceImpl.*(..))")
+    public void pointcut1() {}
+
+//    @Before("execution(* com.kuang.service.UserServiceImpl.*(..))")
+    @Before(value = "pointcut1()")
     public void before() {
         System.out.println("方法执行前");
     }
@@ -29,7 +37,7 @@ public class AnnotationPointcut {
     }
 
     @AfterReturning(returning = "rtn", pointcut = "execution(* com.kuang.service.UserServiceImpl.add(..))")
-    public void afterRtn(Object rtn) throws Throwable {
+    public void afterRtn(int rtn) throws Throwable {
         System.out.println("获取目标方法返回值:" + rtn);
     }
 

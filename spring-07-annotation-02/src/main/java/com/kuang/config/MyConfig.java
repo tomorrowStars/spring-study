@@ -2,14 +2,16 @@ package com.kuang.config;
 
 import com.kuang.pojo.Cat;
 import com.kuang.pojo.Dog;
+import com.kuang.pojo.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Configuration
-//@Component
+@ComponentScan
 public class MyConfig {
 
     /**
@@ -28,6 +30,11 @@ public class MyConfig {
         ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
         Dog dog = context.getBean(Dog.class);
         dog.shout();
+
+
+
+        User user = context.getBean(User.class);
+        System.out.println(user.toString());
     }
 
 }

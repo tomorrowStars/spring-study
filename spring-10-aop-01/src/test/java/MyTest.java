@@ -18,17 +18,16 @@ public class MyTest {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
         UserService userService = context.getBean("userServiceImpl", UserService.class);
         userService.add();
+        System.out.println("============");
         userService.delete();
 
-//        ---------方法执行前---------
-//            增加了一个用户
-//        ---------方法执行后---------
-//        ---------方法执行后,返回值：null---------
-//
-//        ---------方法执行前---------
-//            删除了一个用户
-//        ---------方法执行后---------
-//        ---------方法执行后,返回值：null---------
+//        com.kuang.service.UserServiceImpl的方法：add将要执行
+//                增加了一个用户
+//        执行了com.kuang.service.UserServiceImpl的方法：add；返回值null
+//                ============
+//        com.kuang.service.UserServiceImpl的方法：delete将要执行
+//                删除了一个用户
+//        执行了com.kuang.service.UserServiceImpl的方法：delete；返回值200
     }
 
     /**
@@ -39,17 +38,18 @@ public class MyTest {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans2.xml");
         UserService userService = context.getBean("userServiceImpl", UserService.class);
         userService.add();
+        System.out.println("=============");
         userService.delete();
 
 //        ---------方法执行前---------
-//            增加了一个用户
+//                增加了一个用户
 //        ---------方法执行后---------
 //        ---------方法执行后,返回值：null---------
-//
+//                =============
 //        ---------方法执行前---------
-//            删除了一个用户
+//                删除了一个用户
 //        ---------方法执行后---------
-//        ---------方法执行后,返回值：null---------
+//        ---------方法执行后,返回值：200---------
     }
 
 

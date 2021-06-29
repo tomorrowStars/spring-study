@@ -1,3 +1,4 @@
+//import com.kuang.service.MyConfig;
 import com.kuang.service.MyConfig;
 import com.kuang.service.UserService;
 import org.junit.Test;
@@ -12,35 +13,54 @@ public class MyTest {
 
 
     /**
-     * <!--第三种方式:注解实现-->
+     * <!--第三种方式:xml注解实现-->
      */
     @Test
     public void test001() {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
         UserService userService = context.getBean("userServiceImpl", UserService.class);
         userService.add();
-//        userService.delete();
+        System.out.println("=============");
+        userService.delete();
 
 //        环绕前
-//        签名：void com.kuang.service.UserService.add()
-//          方法执行前
+//        签名：Integer com.kuang.service.UserService.add()
+//        方法执行前
 //                增加了一个用户
-//          方法执行之后
-//        环绕后
-//        执行结果：null
-
+//        获取目标方法返回值:10
+//        方法执行之后
+//                环绕后
+//        执行结果：10
+//         =============
 //        环绕前
 //        签名：void com.kuang.service.UserService.delete()
-//          方法执行前
+//        方法执行前
 //                删除了一个用户
-//          方法执行之后
-//        环绕后
+//        方法执行之后
+//                环绕后
 //        执行结果：null
     }
+
+    /**
+     * 方式四: java类注解 实现
+     * @EnableAspectJAutoProxy // 方式四：可以代替xml中的<aop:aspectj-autoproxy/>
+     */
     @Test
     public void test002() {
         ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
         UserService userServiceImpl = context.getBean("userServiceImpl", UserService.class);
         userServiceImpl.add();
+        // java.lang.NoSuchMethodError: 'java.lang.Integer com.kuang.service.UserService.add()'
+        // add方法的返回值，需要是integer类型，不能是int类型
+
+//        环绕前
+//        签名：Integer com.kuang.service.UserService.add()
+//        方法执行前
+//                增加了一个用户
+//        获取目标方法返回值:10
+//        方法执行之后
+//                环绕后
+//        执行结果：10
+
     }
 }
