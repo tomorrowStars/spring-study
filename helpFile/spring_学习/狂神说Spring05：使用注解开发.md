@@ -252,7 +252,20 @@ ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.cl
 
 使用的实现类是`AnnotationConfigApplicationContext`，必须传入一个标注了`@Configuration`的类名。
 
-此外，`AppConfig`还标注了`@ComponentScan`，它告诉容器，自动搜索当前类所在的包以及子包，把所有标注为`@Component`的Bean自动创建出来，并根据`@Autowired`进行装配。
+此外，`AppConfig`还标注了`@ComponentScan`，它告诉容器，**自动搜索当前类所在的包以及子包**，
+
+**// 也可以通过配置扫描路径来 搜索指定路径下的component**
+**@ComponentScan(com.itranswarp.learnjava)**
+
+把所有标注为`@Component`的Bean自动创建出来，并**根据`@Autowired`进行装配。**
+
+```xml
+// 也可以通过配置扫描路径来 搜索指定路径下的component
+@ComponentScan(com.itranswarp.learnjava)
+
+```
+
+
 
 整个工程结构如下：
 
