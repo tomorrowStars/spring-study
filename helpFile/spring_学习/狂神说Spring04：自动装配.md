@@ -12,7 +12,9 @@
 
 Bean的自动装配
 
-## 自动装配说明
+## 1，自动装配说明
+
+### 1-1 说明
 
 - 自动装配是使用spring满足bean依赖的一种方法
 - spring会在应用上下文中为某个bean寻找其依赖的bean。
@@ -27,8 +29,8 @@ Spring中bean有三种装配机制，分别是：
 
 Spring的自动装配需要从两个角度来实现，或者说是两个操作：
 
-1. 组件扫描(component scanning)：spring会自动发现应用上下文中所创建的bean；
-2. 自动装配(autowiring)：spring自动满足bean之间的依赖，也就是我们说的IoC/DI；
+1.  **组件扫描**(component scanning)：spring会自动发现应用上下文中所创建的bean；
+2.  **自动装配**(autowiring)：spring自动满足bean之间的依赖，也就是我们说的IoC/DI；
 
 组件扫描和自动装配组合发挥巨大威力，使得显示的配置降低到最少。
 
@@ -37,7 +39,7 @@ Spring的自动装配需要从两个角度来实现，或者说是两个操作�
 **
 **
 
-### 测试环境搭建
+### 1-2 测试环境搭建
 
 1、新建一个项目
 
@@ -102,11 +104,11 @@ public class MyTest {
 
 结果正常输出，环境OK
 
-## 方式1，在xml中显式配置；
+## 2，方式1，在xml中显式配置；
 
 byName和byType自动装配
 
-### byName
+### 2-1，byName
 
 **autowire byName (按名称自动装配)**
 
@@ -119,16 +121,64 @@ byName和byType自动装配
 1、修改bean配置，增加一个属性  autowire="byName"
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+   <bean id="dog" class="com.Dog"/>
+   <bean id="cat" class="com.Cat"/>
+
+<!--
+	<bean id="user" class="com.User">
+       <property name="cat" ref="cat"/>
+       <property name="dog" ref="dog"/>
+       <property name="str" value="qinjiang"/>
+   </bean>
+-->
+<bean id="user" class="com.User" autowire="byName">
+   <property name="str" value="qinjiang"/>
+</bean>
+</beans>
+```
+
+2、再次测试，结果依旧成功输出！
+
+
+
+3、bean的Id不对，会报错
+
+​     我们将 cat 的bean id修改为 catXXX
+
+```xml
+<bean id="dog" class="com.Dog"/>
+<bean id="cat111" class="com.Cat"/>// 修改
+
 <bean id="user" class="com.User" autowire="byName">
    <property name="str" value="qinjiang"/>
 </bean>
 ```
 
-2、再次测试，结果依旧成功输出！
+4、时报空指针java.lang.NullPointerException。
 
-3、我们将 cat 的bean id修改为 catXXX
+因为按byName规则找不对应set方法，真正的setCat就没执行，对象就没有初始化，所以调用时就会报空指针错误。
 
-4、再次测试， 执行时报空指针java.lang.NullPointerException。因为按byName规则找不对应set方法，真正的setCat就没执行，对象就没有初始化，所以调用时就会报空指针错误。
+
+
+5，出现多个类型相同的bean时不会报错，只要有对的beanId就行
+
+```xml
+<bean id="dog" class="com.Dog"/>// ID正常
+<bean id="cat" class="com.Cat"/>// ID正常
+<bean id="cat111" class="com.Cat"/>// 追加
+
+<bean id="user" class="com.User" autowire="byName">
+   <property name="str" value="qinjiang"/>
+</bean>
+```
+
+ 
 
 **小结：**
 
@@ -136,17 +186,17 @@ byName和byType自动装配
 
 1. 将查找其类中所有的set方法名，例如setCat，获得将set去掉并且首字母小写的字符串，即cat。
 
-2. 去spring容器中寻找是否有此字符串名称id的对象。
+2. 去spring容器中寻找是否有此字符串名称BeanID的对象。
 
 3. 如果有，就取出注入；如果没有，就报空指针异常。
 
    
 
-### byType
+### 2-2，byType
 
 **autowire byType (按类型自动装配)**
 
-使用autowire byType首先需要保证：同一类型的对象，在spring容器中唯一。如果不唯一，会报不唯一的异常。
+使用autowire byType首先需要保证：**同一类型的对象，在spring容器中唯一**。如果不唯一，会报不唯一的异常。
 
 ```
 NoUniqueBeanDefinitionException
@@ -163,7 +213,7 @@ NoUniqueBeanDefinitionException
 ```xml
 <bean id="dog" class="com.Dog"/>
 <bean id="cat" class="com.Cat"/>
-<bean id="cat2" class="com.Cat"/>
+<bean id="cat2" class="com.Cat"/> // 重复的Bean类型 会报错
 
 <bean id="user" class="com.User" autowire="byType">
    <property name="str" value="qinjiang"/>
@@ -173,6 +223,18 @@ NoUniqueBeanDefinitionException
 4、测试，报错：NoUniqueBeanDefinitionException
 
 5、删掉cat2，将cat的bean名称改掉！测试！因为是按类型装配，所以并不会报异常，也不影响最后的结果。甚至将id属性去掉，也不影响结果。
+
+```xml
+<bean id="dog" class="com.Dog"/>
+
+<bean id="cat2" class="com.Cat"/> // bean的类型正确， id不对， 执行正常。
+
+<bean id="user" class="com.User" autowire="byType">
+   <property name="str" value="qinjiang"/>
+</bean>
+```
+
+
 
 这就是按照类型自动装配！
 
@@ -186,7 +248,7 @@ jdk1.5开始支持注解，spring2.5开始全面支持注解。
 
 1、在spring配置文件中引入context文件头
 
-```
+```xml
 xmlns:context="http://www.springframework.org/schema/context"
 
 http://www.springframework.org/schema/context
@@ -203,14 +265,17 @@ http://www.springframework.org/schema/context/spring-context.xsd
 
 #### @Autowired
 
-- @Autowired是按类型自动转配的，不支持id匹配。
-- 需要导入 spring-aop的包！
+- @**Autowired是按类型自动转配**的，不支持id匹配。
+
+- 需要导入 spring-aop的包！（高版本的spring-mvc的中已经包含，不需要单独导入）
+
+  
 
 测试：
 
 1、将User类中的set方法去掉，使用@Autowired注解
 
-```
+```java
 public class User {
    @Autowired
    private Cat cat;
@@ -232,49 +297,74 @@ public class User {
 
 2、此时配置文件内容
 
-```
+```java
 <context:annotation-config/>
 
 <bean id="dog" class="com.Dog"/>
 <bean id="cat" class="com.Cat"/>
+    <!--    没有和 注入类型名【cat】一致的id的bean时， 不能定义多个该类型的bean，加上@Qualifier则可以-->
+<bean id="cat22" class="com.kuang.pojo.Cat"/>
 <bean id="user" class="com.User"/>
 ```
 
 3、测试，成功输出结果！
 
+
+
+4,  没有和 注入类型名【cat】一致的id的bean时， 不能定义多个该类型的bean，加上@Qualifier则可以
+
+```xml
+<context:annotation-config/>
+
+<bean id="dog" class="com.Dog"/>
+<bean id="cat111" class="com.Cat"/>
+    <!--    没有和 注入类型名【cat】一致的id的bean时， 不能定义多个该类型的bean，加上@Qualifier则可以-->
+<bean id="cat22" class="com.kuang.pojo.Cat"/>
+<bean id="user" class="com.User"/>
+```
+
+
+
+
+
 【小狂神科普时间】
 
 @Autowired(required=false)  说明：false，对象可以为null；true，对象必须存对象，不能为null。
 
-```
+```java
 //如果允许对象为null，设置required = false,默认为true
 @Autowired(required = false)
 private Cat cat;
 ```
 
+
+
 ####  
 
 #### @Qualifier
 
-- @Autowired是根据类型自动装配的，加上@Qualifier则可以根据byName的方式自动装配
-- @Qualifier不能单独使用。
+- **@Autowired**是根据**类型自动装配**的，
+- **加上@Qualifier**则可以根据**byName**的方式自动装配
+- @Qualifier**不能单独使用**。
 
 测试实验步骤：
 
 1、配置文件修改内容，保证类型存在对象。且名字不为类的默认名字！
 
-```
+```xml
 <bean id="dog1" class="com.Dog"/>
 <bean id="dog2" class="com.Dog"/>
+
+<!--    没有和 注入类型名【cat】一致的id的bean时， 不能定义多个该类型的bean，加上@Qualifier则可以-->
 <bean id="cat1" class="com.Cat"/>
 <bean id="cat2" class="com.Cat"/>
 ```
 
 2、没有加Qualifier测试，直接报错
 
-3、在属性上添加Qualifier注解
+3、在属性上添加Qualifier注解, 会根据value值去查找beanID
 
-```
+```java
 @Autowired
 @Qualifier(value = "cat2")
 private Cat cat;
@@ -290,16 +380,17 @@ private Dog dog;
 #### @Resource
 
 - @Resource如有指定的name属性，先按该属性进行byName方式查找装配；
-- 其次再进行默认的byName方式进行装配；
+- 其次再进行**默认的byName**方式进行装配；
 - 如果以上都不成功，则按byType的方式自动装配。
 - 都不成功，则报异常。
 
 实体类：
 
-```
+```java
 public class User {
    //如果允许对象为null，设置required = false,默认为true
-   @Resource(name = "cat2")
+   // 去找beanId为cat2 的bean
+    @Resource(name = "cat2")
    private Cat cat;
    @Resource
    private Dog dog;
@@ -309,10 +400,10 @@ public class User {
 
 beans.xml
 
-```
+```xml
 <bean id="dog" class="com.Dog"/>
 <bean id="cat1" class="com.Cat"/>
-<bean id="cat2" class="com.Cat"/>
+<bean id="cat2" class="com.Cat"/> //
 
 <bean id="user" class="com.User"/>
 ```
@@ -321,16 +412,16 @@ beans.xml
 
 配置文件2：beans.xml ， 删掉cat2
 
-```
+```xml
 <bean id="dog" class="com.Dog"/>
 <bean id="cat1" class="com.Cat"/>
 ```
 
 实体类上只保留注解
 
-```
+```java
 @Resource
-private Cat cat;
+private Cat cat; //先进行byName查找，失败；再进行byType查找，成功。
 @Resource
 private Dog dog;
 ```

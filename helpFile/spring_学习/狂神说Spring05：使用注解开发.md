@@ -284,6 +284,27 @@ spring-ioc-annoconfig
 
 
 
+### ComponentScan(xxx.xxx)// 还可以指定要扫描的包路径，此时配置类的位置可以随便放
+
+```java
+@Configuration
+@ComponentScan(xxx.xxx)// 还可以指定要扫描的包路径，此时配置类的位置可以随便放
+public class AppConfig {
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        UserService userService = context.getBean(UserService.class);
+        User user = userService.login("bob@example.com", "password");
+        System.out.println(user.getName());
+    }
+}
+```
+
+
+
+
+
+
+
 
 
 
