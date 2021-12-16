@@ -374,7 +374,7 @@ public class UserDaoImpl implements UserMapper {
 
 7、测试
 
-```xml
+```java
    @Test
    public void test2(){
        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -414,7 +414,7 @@ dao继承Support类 , 直接利用 getSqlSession() 获得 , 然后直接注入Sq
 
 1、将我们上面写的UserDaoImpl修改一下
 
-```
+```java
 public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
    public List<User> selectUser() {
        UserMapper mapper = getSqlSession().getMapper(UserMapper.class);
@@ -425,7 +425,7 @@ public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
 
 2、修改bean的配置
 
-```
+```xml
 <bean id="userDao" class="com.kuang.dao.UserDaoImpl">
    <property name="sqlSessionFactory" ref="sqlSessionFactory" />
 </bean>
@@ -433,7 +433,7 @@ public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
 
 3、测试
 
-```
+```java
 @Test
 public void test2(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -444,6 +444,35 @@ public void test2(){
 ```
 
 **总结 : 整合到spring以后可以完全不要mybatis的配置文件，除了这些方式可以实现整合之外，我们还可以使用注解来实现，这个等我们后面学习SpringBoot的时候还会测试整合！**
+
+
+
+# 四，[[spring\]xml配置文件中的"classpath:"与"classpath*:"的区别](https://www.cnblogs.com/vickylinj/p/9475990.html)
+
+ 
+
+```xml
+<bean id="sessionFactorySaas" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource" ref="dataSourceSaasdb"/>
+        <!-- mapper和resultmap配置路径 -->
+        <property name="mapperLocations" value="classpath*:mapper/**/saas.*.xml" />
+        <property name="configLocation" value="classpath:mybatis-config.xml"/></bean>
+```
+
+ 
+
+classpath：
+
+- 只会到你的class路径中查找找文件；
+- 有多个classpath路径，并同时加载多个classpath路径的情况下，只会从第一个classpath中加载。
+
+classpath*：
+
+- 不仅包含class路径，还包括jar文件中（class路径）进行查找；
+- 有多个classpath路径，并同时加载多个classpath路径的情况下，会从所有的classpath中加载；
+- 用classpath*:需要遍历所有的classpath，所以加载速度是很慢的；因此，在规划的时候，应该尽可能规划好资源文件所在的路径，尽量避免使用classpath*。
+
+
 
 
 

@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context.xsd">
-    <context:annotation-config/>
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8"/>
+        <property name="url" value="jdbc:mysql://localhost:3306?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
-    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sessionFactory">
         <property name="dataSource" ref="dataSource"/>
-        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="configLocation" value="mybatis-config.xml"/>
         <property name="mapperLocations" value="classpath:com/kuang/dao/*.xml"/>
     </bean>
-<!--    <property name="mapperLocations" value="classpath*:mapper/**/saas.*.xml" />-->
 <!--
     [spring]xml配置文件中的"classpath:"与"classpath*:"的区别
         classpath：
@@ -29,13 +26,12 @@
         有多个classpath路径，并同时加载多个classpath路径的情况下，会从所有的classpath中加载；
         用classpath*:需要遍历所有的classpath，所以加载速度是很慢的；因此，在规划的时候，应该尽可能规划好资源文件所在的路径，尽量避免使用classpath*。
 -->
-
-    <bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+    <bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
 
-    <bean id="userDao" class="com.kuang.dao.UserDaoImpl">
-<!--        <property name="sqlSession" ref="sqlSession"/>-->
-<!--        <constructor-arg index="0" value="sessionTemplate"/>-->
+    <bean class="com.kuang.dao.UserDaoImpl" id="userDao">
+        <property name="sqlSessionFactory" ref="sessionFactory"/>
     </bean>
+
 </beans>

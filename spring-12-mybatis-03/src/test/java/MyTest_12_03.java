@@ -7,15 +7,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
 
-public class MyTest12_02 {
+public class MyTest_12_03 {
     @Test
     public void test01() {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-        UserDao userDao = context.getBean("userDao",UserDaoImpl.class);
+        UserDao userDao = context.getBean("userDao", UserDaoImpl.class);
         List<User> allUsers = userDao.getAllUsers();
-        for (User user : allUsers) {
+        for (User user: allUsers) {
             System.out.println(user);
-
         }
     }
 }

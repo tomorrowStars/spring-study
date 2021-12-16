@@ -22,6 +22,7 @@
         <module>spring-11-aop-02</module>
         <module>spring-12-mybatis-01</module>
         <module>spring-12-mybatis-02</module>
+        <module>spring-12-mybatis-03</module>
     </modules>
 
     <dependencies>
