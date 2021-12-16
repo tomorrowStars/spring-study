@@ -10,15 +10,15 @@
 
 
 
-整合MyBatis
+# 一 整合MyBatis
 
 > #### 步骤
 
-1、导入相关jar包
+## 1、导入相关jar包
 
 junit
 
-```
+```xml
 <dependency>
    <groupId>junit</groupId>
    <artifactId>junit</artifactId>
@@ -28,7 +28,7 @@ junit
 
 mybatis
 
-```
+```xml
 <dependency>
    <groupId>org.mybatis</groupId>
    <artifactId>mybatis</artifactId>
@@ -38,7 +38,7 @@ mybatis
 
 mysql-connector-java
 
-```
+```xml
 <dependency>
    <groupId>mysql</groupId>
    <artifactId>mysql-connector-java</artifactId>
@@ -48,7 +48,7 @@ mysql-connector-java
 
 spring相关
 
-```
+```xml
 <dependency>
    <groupId>org.springframework</groupId>
    <artifactId>spring-webmvc</artifactId>
@@ -63,7 +63,7 @@ spring相关
 
 aspectJ AOP 织入器
 
-```
+```xml
 <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
 <dependency>
    <groupId>org.aspectj</groupId>
@@ -74,7 +74,7 @@ aspectJ AOP 织入器
 
 mybatis-spring整合包 【重点】
 
-```
+```xml
 <dependency>
    <groupId>org.mybatis</groupId>
    <artifactId>mybatis-spring</artifactId>
@@ -84,7 +84,7 @@ mybatis-spring整合包 【重点】
 
 配置Maven静态资源过滤问题！
 
-```
+```xml
 <build>
    <resources>
        <resource>
@@ -105,11 +105,13 @@ mybatis-spring整合包 【重点】
 
 
 
+## 2，回忆MyBatis
+
 > #### 回忆MyBatis
 
 **编写pojo实体类**
 
-```
+```java
 package com.kuang.pojo;
 
 public class User {
@@ -121,7 +123,7 @@ public class User {
 
 **实现mybatis的配置文件**
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration
        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
@@ -152,7 +154,7 @@ public class User {
 
 **UserDao接口编写**
 
-```
+```java
 public interface UserMapper {
    public List<User> selectUser();
 }
@@ -160,7 +162,7 @@ public interface UserMapper {
 
 **接口对应的Mapper映射文件**
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -176,7 +178,7 @@ public interface UserMapper {
 
 **测试类**
 
-```
+```java
 @Test
 public void selectUser() throws IOException {
 
@@ -196,7 +198,7 @@ public void selectUser() throws IOException {
 }
 ```
 
-
+# 二， MyBatis-Spring学习
 
 > #### MyBatis-Spring学习
 
@@ -223,7 +225,7 @@ MyBatis-Spring 需要以下版本：
 
 如果使用 Maven 作为构建工具，仅需要在 pom.xml 中加入以下代码即可：
 
-```
+```xml
 <dependency>
    <groupId>org.mybatis</groupId>
    <artifactId>mybatis-spring</artifactId>
@@ -235,7 +237,7 @@ MyBatis-Spring 需要以下版本：
 
 在 MyBatis-Spring 中，可使用SqlSessionFactoryBean来创建 SqlSessionFactory。要配置这个工厂 bean，只需要把下面代码放在 Spring 的 XML 配置文件中：
 
-```
+```xml
 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
  <property name="dataSource" ref="dataSource" />
 </bean>
@@ -259,7 +261,7 @@ SqlSessionTemplate 是 MyBatis-Spring 的核心。作为 SqlSession 的一个实
 
 可以使用 SqlSessionFactory 作为构造方法的参数来创建 SqlSessionTemplate 对象。
 
-```
+```xml
 <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
  <constructor-arg index="0" ref="sqlSessionFactory" />
 </bean>
@@ -267,7 +269,7 @@ SqlSessionTemplate 是 MyBatis-Spring 的核心。作为 SqlSession 的一个实
 
 现在，这个 bean 就可以直接注入到你的 DAO bean 中了。你需要在你的 bean 中添加一个 SqlSession 属性，就像下面这样：
 
-```
+```java
 public class UserDaoImpl implements UserDao {
 
  private SqlSession sqlSession;
@@ -284,7 +286,7 @@ public class UserDaoImpl implements UserDao {
 
 按下面这样，注入 SqlSessionTemplate：
 
-```
+```xml
 <bean id="userDao" class="org.mybatis.spring.sample.dao.UserDaoImpl">
  <property name="sqlSession" ref="sqlSession" />
 </bean>
@@ -292,11 +294,15 @@ public class UserDaoImpl implements UserDao {
 
 
 
+# 三 整合实现
+
+## 1，整合实现一
+
 > #### 整合实现一
 
 1、引入Spring配置文件beans.xml
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -306,7 +312,7 @@ public class UserDaoImpl implements UserDao {
 
 2、配置数据源替换mybaits的数据源
 
-```
+```xml
 <!--配置数据源：数据源有非常多，可以使用第三方的，也可使使用Spring的-->
 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
    <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -318,7 +324,7 @@ public class UserDaoImpl implements UserDao {
 
 3、配置SqlSessionFactory，关联MyBatis
 
-```
+```xml
 <!--配置SqlSessionFactory-->
 <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
    <property name="dataSource" ref="dataSource"/>
@@ -330,7 +336,7 @@ public class UserDaoImpl implements UserDao {
 
 4、注册sqlSessionTemplate，关联sqlSessionFactory；
 
-```
+```xml
 <!--注册sqlSessionTemplate , 关联sqlSessionFactory-->
 <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
    <!--利用构造器注入-->
@@ -340,7 +346,7 @@ public class UserDaoImpl implements UserDao {
 
 5、增加Dao接口的实现类；私有化sqlSessionTemplate
 
-```
+```java
 public class UserDaoImpl implements UserMapper {
 
    //sqlSession不用我们自己创建了，Spring来管理
@@ -360,7 +366,7 @@ public class UserDaoImpl implements UserMapper {
 
 6、注册bean实现
 
-```
+```xml
 <bean id="userDao" class="com.kuang.dao.UserDaoImpl">
    <property name="sqlSession" ref="sqlSession"/>
 </bean>
@@ -368,7 +374,7 @@ public class UserDaoImpl implements UserMapper {
 
 7、测试
 
-```
+```xml
    @Test
    public void test2(){
        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -380,7 +386,7 @@ public class UserDaoImpl implements UserMapper {
 
 结果成功输出！现在我们的Mybatis配置文件的状态！发现都可以被Spring整合！
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration
        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
@@ -392,7 +398,7 @@ public class UserDaoImpl implements UserMapper {
 </configuration>
 ```
 
-
+## 2，整合实现二
 
 > #### 整合实现二
 

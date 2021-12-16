@@ -198,9 +198,7 @@ byName和byType自动装配
 
 使用autowire byType首先需要保证：**同一类型的对象，在spring容器中唯一**。如果不唯一，会报不唯一的异常。
 
-```
-NoUniqueBeanDefinitionException
-```
+​		**NoUniqueBeanDefinitionException**
 
 测试：
 
@@ -378,6 +376,18 @@ private Dog dog;
 ####  
 
 #### @Resource
+
+- @Resource属于J2EE的包，java 11 版本 resource从jdk中删除了，需要手动添加包 或者使用JDK8版本
+
+```xml
+<dependency>
+    <groupId>javax.annotation</groupId>
+    <artifactId>javax.annotation-api</artifactId>
+    <version>1.3.2</version>
+</dependency>
+```
+
+
 
 - @Resource如有指定的name属性，先按该属性进行byName方式查找装配；
 - 其次再进行**默认的byName**方式进行装配；

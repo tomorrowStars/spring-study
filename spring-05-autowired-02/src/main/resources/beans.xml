@@ -8,6 +8,7 @@
        https://www.springframework.org/schema/context/spring-context.xsd">
 
     <!--需要导入 spring-aop的包！-->
+    <!--开启对java代码上的注解的支持-->
     <context:annotation-config/>
 
    <!-- @Autowired是按类型自动转配的，不按id匹配。-->

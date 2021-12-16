@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>spring-10-aop-01</artifactId>
+
     <dependencies>
         <dependency>
             <groupId>org.aspectj</groupId>

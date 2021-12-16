@@ -8,8 +8,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ComponentScan
+@Configuration  // 本身就是一个cmponent组件， 只是一个配置类， 相当于xml的配置文件
+@ComponentScan  // 默认自动搜索当前类所在的包以及子包，把所有标注为@Component的Bean自动创建出来，并根据@Autowired进行装配。
+                //  也可以标注扫描的包路径 @ComponentScan("com.kuang.pojo")
 public class AppConfig {
 
 //    AppConfig还标注了@ComponentScan，它告诉容器，自动搜索当前类所在的包以及子包，把所有标注为@Component的Bean自动创建出来，并根据@Autowired进行装配。
@@ -35,7 +36,7 @@ public class AppConfig {
 //    配置类被标注为@Configuration和@ComponentScan；
 //    所有Bean均在指定包以及子包内。
 //    使用@ComponentScan非常方便，但是，我们也要特别注意包的层次结构。通常来说，启动配置AppConfig位于自定义的顶层包（例如com.itranswarp.learnjava），其他Bean按类别放入子包。
-
+//   也可以标注扫描的包路径 @ComponentScan("com.kuang.pojo")
 
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
