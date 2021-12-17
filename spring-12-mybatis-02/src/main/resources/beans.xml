@@ -6,36 +6,36 @@
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd">
-    <context:annotation-config/>
+
+<!--    可以使用注解版-->
+<!--    <context:annotation-config/>-->
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>
+
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
         <property name="mapperLocations" value="classpath:com/kuang/dao/*.xml"/>
+<!--        <property name="typeAliasesPackage" value="com.kuang.pojo"/>-->
+<!--        <property name="typeAliases" value="com.kuang.pojo.User"/>-->
+<!--        <property name="typeAliases" >-->
+<!--            <array>-->
+<!--                <value>com.kuang.pojo.User</value>-->
+<!--            </array>-->
+<!--        </property>-->
     </bean>
-<!--    <property name="mapperLocations" value="classpath*:mapper/**/saas.*.xml" />-->
-<!--
-    [spring]xml配置文件中的"classpath:"与"classpath*:"的区别
-        classpath：
-        只会到你的class路径中查找找文件；
-        有多个classpath路径，并同时加载多个classpath路径的情况下，只会从第一个classpath中加载。
-        classpath*：
-        不仅包含class路径，还包括jar文件中（class路径）进行查找；
-        有多个classpath路径，并同时加载多个classpath路径的情况下，会从所有的classpath中加载；
-        用classpath*:需要遍历所有的classpath，所以加载速度是很慢的；因此，在规划的时候，应该尽可能规划好资源文件所在的路径，尽量避免使用classpath*。
--->
 
-    <bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
 
     <bean id="userDao" class="com.kuang.dao.UserDaoImpl">
-<!--        <property name="sqlSession" ref="sqlSession"/>-->
+        <property name="sqlSession" ref="sqlSession"/>
 <!--        <constructor-arg index="0" value="sessionTemplate"/>-->
     </bean>
 </beans>

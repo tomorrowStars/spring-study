@@ -26,9 +26,9 @@
         有多个classpath路径，并同时加载多个classpath路径的情况下，会从所有的classpath中加载；
         用classpath*:需要遍历所有的classpath，所以加载速度是很慢的；因此，在规划的时候，应该尽可能规划好资源文件所在的路径，尽量避免使用classpath*。
 -->
-    <bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSession">
-        <constructor-arg index="0" ref="sessionFactory"/>
-    </bean>
+<!--    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">-->
+<!--        <constructor-arg index="0" ref="sessionFactory"/>-->
+<!--    </bean>-->
 
     <bean class="com.kuang.dao.UserDaoImpl" id="userDao">
         <property name="sqlSessionFactory" ref="sessionFactory"/>

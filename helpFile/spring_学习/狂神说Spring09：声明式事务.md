@@ -12,6 +12,10 @@
 
 声明式事务
 
+# 1，回顾事务
+
+## 1-1 回顾事务
+
 > #### 回顾事务
 
 - 事务在项目开发过程非常重要，涉及到数据的一致性的问题，不容马虎！
@@ -19,25 +23,23 @@
 
 事务就是把一系列的动作当成一个独立的工作单元，这些动作要么全部完成，要么全部不起作用。
 
-**事务四个属性ACID**
+## **1-2 事务四个属性ACID**
 
 1. 原子性（atomicity）
 
-2. - 事务是原子性操作，由一系列动作组成，事务的原子性确保动作要么全部完成，要么完全不起作用
+   事务是原子性操作，由一系列动作组成，事务的原子性确保动作要么全部完成，要么完全不起作用
 
-3. 一致性（consistency）
+2. 一致性（consistency）
 
-4. - 一旦所有事务动作完成，事务就要被提交。数据和资源处于一种满足业务规则的一致性状态中
+   一旦所有事务动作完成，事务就要被提交。数据和资源处于一种满足业务规则的一致性状态中
 
-5. 隔离性（isolation）
+3. 隔离性（isolation）
 
-6. - 可能多个事务会同时处理相同的数据，因此每个事务都应该与其他事务隔离开来，防止数据损坏
+   可能多个事务会同时处理相同的数据，因此每个事务都应该与其他事务隔离开来，防止数据损坏
 
 7. 持久性（durability）
 
-   
-
-8. - 事务一旦完成，无论系统发生什么错误，结果都不会受到影响。通常情况下，事务的结果被写到持久化存储器中
+   事务一旦完成，无论系统发生什么错误，结果都不会受到影响。通常情况下，事务的结果被写到持久化存储器中
 
 > #### 测试
 
@@ -45,7 +47,7 @@
 
 在之前的案例中，我们给userDao接口新增两个方法，删除和增加用户；
 
-```
+```java
 //添加一个用户
 int addUser(User user);
 
@@ -55,7 +57,7 @@ int deleteUser(int id);
 
 mapper文件，我们故意把 deletes 写错，测试！
 
-```
+```xml
 <insert id="addUser" parameterType="com.User">
 insert into user (id,name,pwd) values (#{id},#{name},#{pwd})
 </insert>
@@ -67,7 +69,7 @@ deletes from user where id = #{id}
 
 编写接口的实现类，在实现类中，我们去操作一波
 
-```
+```java
 public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
 
    //增加一些操作
@@ -95,7 +97,7 @@ public class UserDaoImpl extends SqlSessionDaoSupport implements UserMapper {
 
 测试
 
-```
+```java
 @Test
 public void test2(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -226,20 +228,3 @@ public void test2(){
   
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7JicnvW4708YZgXPQAcr3JTia8Y39JMY2G6jbR5C8NP2ecF7ocDpwNU2XeCHKga62ToC8SKrbGnJRiaw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-视频同步更新
-
-如果觉得帮助到了您，不妨赞赏支持一下吧！
-
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7KaCZTnzpTQ4y0unN9icJaRPdGy06vUfzQgzpibBctoiaZbTiaVibavlK6Ww0OIavHmSBf5luzDibthmgBA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7LBEiaxgibdgic7wYWNIvwhj8xsu8hCvVFXOgVZ3icwleHSeDiaeAZjqA8FhpUxUCumevPok6qViaU2e2Ng/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-喜欢此内容的人还喜欢
-
-[为什么不建议在 MySQL 中使用 UTF-8？为什么不建议在 MySQL 中使用 UTF-8？...JavaCat不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[读者牛逼！读者牛逼！...小林coding不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[张一鸣退一步，换字节跳动的“海阔天空”张一鸣退一步，换字节跳动的“海阔天空”...CSDN不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)
-
-![img](https://mp.weixin.qq.com/mp/qrcode?scene=10000004&size=102&__biz=Mzg2NTAzMTExNg==&mid=2247484148&idx=1&sn=9d3edabf2443cd3a552e62e51b1f4097&send_time=)
-
-微信扫一扫
-关注该公众号

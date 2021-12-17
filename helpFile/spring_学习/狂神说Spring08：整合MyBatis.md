@@ -84,19 +84,42 @@ mybatis-spring整合包 【重点】
 
 配置Maven静态资源过滤问题！
 
+jdk版本问题!
+
 ```xml
-<build>
-   <resources>
-       <resource>
-           <directory>src/main/java</directory>
-           <includes>
-               <include>**/*.properties</include>
-               <include>**/*.xml</include>
-           </includes>
-           <filtering>true</filtering>
-       </resource>
-   </resources>
-</build>
+ <build>
+        <!--1, Maven静态资源过滤问题-->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+        <!--2, jdk版本问题-->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 ```
 
 2、编写配置文件
@@ -330,9 +353,15 @@ public class UserDaoImpl implements UserDao {
    <property name="dataSource" ref="dataSource"/>
    <!--关联Mybatis-->
    <property name="configLocation" value="classpath:mybatis-config.xml"/>
+   
    <property name="mapperLocations" value="classpath:com/kuang/dao/*.xml"/>
 </bean>
+
 ```
+
+  **// classpath 和 classpath* 区别参考下方**
+
+
 
 4、注册sqlSessionTemplate，关联sqlSessionFactory；
 
@@ -386,17 +415,87 @@ public class UserDaoImpl implements UserMapper {
 
 结果成功输出！现在我们的Mybatis配置文件的状态！发现都可以被Spring整合！
 
+**mybatis-config.xml**
+
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration
        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
        "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <!--
+       <environments default="development">
+       <environment id="development">
+           <transactionManager type="JDBC"/>
+           <dataSource type="POOLED">
+               <property name="driver" value="com.mysql.jdbc.Driver"/>
+               <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8"/>
+               <property name="username" value="root"/>
+               <property name="password" value="123456"/>
+           </dataSource>
+       </environment>
+   </environments>
+
+   <mappers>
+       <package name="com.kuang.dao"/>
+   </mappers>
+    -->
    <typeAliases>
        <package name="com.kuang.pojo"/>
    </typeAliases>
 </configuration>
 ```
+
+**beans.xml**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+<!--    可以使用注解版-->
+<!--    <context:annotation-config/>-->
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:com/kuang/dao/*.xml"/>
+<!--        <property name="typeAliasesPackage" value="com.kuang.pojo"/>-->
+<!--        <property name="typeAliases" value="com.kuang.pojo.User"/>-->
+<!--        <property name="typeAliases" >-->
+<!--            <array>-->
+<!--                <value>com.kuang.pojo.User</value>-->
+<!--            </array>-->
+<!--        </property>-->
+    </bean>
+
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sessionFactory"/>
+    </bean>
+
+    <bean id="userDao" class="com.kuang.dao.UserDaoImpl">
+        <property name="sqlSession" ref="sqlSession"/>
+<!--        <constructor-arg index="0" value="sessionTemplate"/>-->
+    </bean>
+</beans>
+```
+
+
 
 ## 2，整合实现二
 
@@ -447,7 +546,75 @@ public void test2(){
 
 
 
-# 四，[[spring\]xml配置文件中的"classpath:"与"classpath*:"的区别](https://www.cnblogs.com/vickylinj/p/9475990.html)
+**mybatis-config.xml**
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <typeAliases>
+        <package name="com.kuang.pojo"/>
+    </typeAliases>
+
+</configuration>
+```
+
+
+
+**beans.xml**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306?useSSL=true&amp;useUnicode=true&amp;characterEncoding=utf8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:com/kuang/dao/*.xml"/>
+    </bean>
+<!--
+    [spring]xml配置文件中的"classpath:"与"classpath*:"的区别
+        classpath：
+        只会到你的class路径中查找找文件；
+        有多个classpath路径，并同时加载多个classpath路径的情况下，只会从第一个classpath中加载。
+        classpath*：
+        不仅包含class路径，还包括jar文件中（class路径）进行查找；
+        有多个classpath路径，并同时加载多个classpath路径的情况下，会从所有的classpath中加载；
+        用classpath*:需要遍历所有的classpath，所以加载速度是很慢的；因此，在规划的时候，应该尽可能规划好资源文件所在的路径，尽量避免使用classpath*。
+-->
+<!--    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">-->
+<!--        <constructor-arg index="0" ref="sessionFactory"/>-->
+<!--    </bean>-->
+
+    <bean class="com.kuang.dao.UserDaoImpl" id="userDao">
+        <property name="sqlSessionFactory" ref="sessionFactory"/>
+    </bean>
+
+</beans>
+```
+
+
+
+
+
+# 四，附录："classpath:"与"classpath*:"的区别]
+
+(https://www.cnblogs.com/vickylinj/p/9475990.html)
 
  
 
@@ -476,6 +643,83 @@ classpath*：
 
 
 
+# 五，附录： MapperFactoryBean 配置
+
+**Mybatis整合Spring**
+
+​    根据官方的说法，在ibatis3，也就是Mybatis3问世之前，Spring3的开发工作就已经完成了，所以Spring3中还是没有对Mybatis3的支持。
+
+因此由Mybatis社区自己开发了一个Mybatis-Spring用来满足Mybatis用户整合Spring的需求。下面就将通过Mybatis-Spring来整合Mybatis跟
+
+Spring的用法做一个简单的介绍
+
+***MapperFactoryBean***
+
+​    首先，我们需要从Mybatis官网上下载Mybatis-Spring的jar包添加到我们项目的类路径下，当然也需要添加Mybatis的相关jar包和Spring的
+
+相关jar包。我们知道在Mybatis的所有操作都是基于一个SqlSession的，而SqlSession是由SqlSessionFactory来产生的，SqlSessionFactory又
+
+是由SqlSessionFactoryBuilder来生成的。但是Mybatis-Spring是基于SqlSessionFactoryBean的。
+
+在使用Mybatis-Spring的时候，我们也需要SqlSession
+
+，而且这个SqlSession是内嵌在程序中的，一般不需要我们直接访问。
+
+SqlSession也是由SqlSessionFactory来产生的，但是Mybatis-Spring
+
+给我们封装了一个SqlSessionFactoryBean，在这个bean里面还是通过SqlSessionFactoryBuilder来建立对应的SqlSessionFactory，
+
+进而获取到对应的SqlSession。通过SqlSessionFactoryBean我们可以通过对其指定一些属性来提供Mybatis的一些配置信息。
+
+所以接下来我们需要在Spring的applicationContext配置文件中
+
+**定义一个SqlSessionFactoryBean**
+
+
+
+```xml
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+       <property name="dataSource" ref="dataSource" />  
+       <property name="configLocation" value="classpath:mybatis-config.xml"/>
+       <property name="mapperLocations"  
+              value="classpath:com/tiantian/ckeditor/mybatis/mappers/*Mapper.xml" />  
+<!--        <property name="typeAliasesPackage" value="com.kuang.pojo"/>-->
+<!--        <property name="typeAliases"        value="com.kuang.pojo.User"/>-->
+       <property name="typeAliases">  
+        <array>  
+            <value>com.tiantian.mybatis.model.Blog</value>  
+            <value>com.tiantian.mybatis.model.Comment</value>  
+        </array>  
+</property>  
+</bean>  
+```
+
+
+
+ 在定义SqlSessionFactoryBean的时候，
+
+- dataSource属性是必须指定的，它表示用于连接数据库的数据源。
+
+-  mapperLocations：它表示我们的Mapper文件存放的位置，当我们的Mapper文件跟对应的Mapper接口处于同一位置的时候可以不用指定该属性的值
+
+- configLocation：用于指定Mybatis的配置文件位置。如果指定了该属性，那么会以该配置文件的内容作为配置信息构建对应的SqlSessionFactoryBuilder，
+
+  ​                             但是后续属性指定的内容会覆盖该配置文件里面指定的对应内容
+
+-  typeAliasesPackage：它一般对应我们的实体类所在的包，这个时候会自动取对应包中不包括包名的简单类名作为包括包名的别名。
+
+  ​                                     多个package之间可以用逗号或者分号等来进行分隔（**value的值一定要是包的全名**）
+
+-  typeAliases：数组类型，用来指定别名的。指定了这个属性后，Mybatis会把这个类型的**短名称**作为这个类型的别名，
+
+  ​                        前提是该类上没有标注@Alias注解，否则将使用该注解对应的值作为此种类型的别名（**value的值一定要是类的完全限定名**）
+
+- plugins：数组类型，用来指定Mybatis的Interceptor
+-  typeHandlersPackage：用来指定TypeHandler所在的包，如果指定了该属性，SqlSessionFactoryBean会自动把该包下面的类注册为对应的TypeHandler。多个package之间可以用逗号或者分号等来进行分隔
+-  typeHandlers：数组类型，表示TypeHandler
+
+
+
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7LUziamJeeiaLFt7YwxJtAgSMJeByJtUH7v6CqSCHYu4ibBe0cPDkfsE95xd2UQOOFfrZXZmVmfIDd5g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
 end
@@ -484,19 +728,3 @@ end
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7JicnvW4708YZgXPQAcr3JTia8Y39JMY2G6jbR5C8NP2ecF7ocDpwNU2XeCHKga62ToC8SKrbGnJRiaw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
-视频同步更新
-
-如果觉得帮助到了您，不妨赞赏支持一下吧！
-
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7KaCZTnzpTQ4y0unN9icJaRPdGy06vUfzQgzpibBctoiaZbTiaVibavlK6Ww0OIavHmSBf5luzDibthmgBA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7LBEiaxgibdgic7wYWNIvwhj8xsu8hCvVFXOgVZ3icwleHSeDiaeAZjqA8FhpUxUCumevPok6qViaU2e2Ng/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-喜欢此内容的人还喜欢
-
-[蕲春浠水对比，谁更具有优势？蕲春浠水对比，谁更具有优势？...蕲阳号外不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[默哀！袁隆平院士逝世默哀！袁隆平院士逝世...侠客岛不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[这个证价值二三十万，蕲春农村家家都有！这个证价值二三十万，蕲春农村家家都有！...蕲阳号外不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)
-
-![img](https://mp.weixin.qq.com/mp/qrcode?scene=10000004&size=102&__biz=Mzg2NTAzMTExNg==&mid=2247484144&idx=1&sn=768f97da78a9ceae8321d101da3c480e&send_time=)
-
-微信扫一扫
-关注该公众号
