@@ -16,16 +16,7 @@
         <property name="configLocation" value="mybatis-config.xml"/>
         <property name="mapperLocations" value="classpath:com/kuang/dao/*.xml"/>
     </bean>
-<!--
-    [spring]xml配置文件中的"classpath:"与"classpath*:"的区别
-        classpath：
-        只会到你的class路径中查找找文件；
-        有多个classpath路径，并同时加载多个classpath路径的情况下，只会从第一个classpath中加载。
-        classpath*：
-        不仅包含class路径，还包括jar文件中（class路径）进行查找；
-        有多个classpath路径，并同时加载多个classpath路径的情况下，会从所有的classpath中加载；
-        用classpath*:需要遍历所有的classpath，所以加载速度是很慢的；因此，在规划的时候，应该尽可能规划好资源文件所在的路径，尽量避免使用classpath*。
--->
+
 <!--    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">-->
 <!--        <constructor-arg index="0" ref="sessionFactory"/>-->
 <!--    </bean>-->

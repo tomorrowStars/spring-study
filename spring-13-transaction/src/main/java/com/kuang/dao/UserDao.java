@@ -31,5 +31,18 @@ public interface UserDao {
      * @param id
      * @return
      */
-    int deleteUserById(@Param("userId") int id);
+    int deleteUserById( int id);
+
+    /**
+     * 删除用户
+     * @param id
+     * @return
+     */
+    int deleteUserByIdErr( int id);
+
+    /**
+     * 更新并返回 user一览数据
+     * @return
+     */
+    List<User> updateAndGetList();
 }

@@ -8,10 +8,6 @@
 
 
 
-
-
-声明式事务
-
 # 1，回顾事务
 
 ## 1-1 回顾事务
@@ -40,6 +36,8 @@
 7. 持久性（durability）
 
    事务一旦完成，无论系统发生什么错误，结果都不会受到影响。通常情况下，事务的结果被写到持久化存储器中
+
+## 1-3，没有事务管理的程序
 
 > #### 测试
 
@@ -119,6 +117,8 @@ public void test2(){
 
 
 
+# 2，spring中的事务管理
+
 > Spring中的事务管理
 
 Spring在不同的事务管理API之上定义了一个抽象层，使得开发人员不必了解底层的事务管理API就可以使用Spring的事务管理机制。Spring支持编程式事务管理和声明式的事务管理。
@@ -132,11 +132,11 @@ Spring在不同的事务管理API之上定义了一个抽象层，使得开发�
 
 - 一般情况下比编程式事务好用。
 - 将事务管理代码从业务方法中分离出来，以声明的方式来实现事务管理。
-- 将事务管理作为横切关注点，通过aop方法模块化。Spring中通过Spring AOP框架支持声明式事务管理。
+- 将事务管理作为横切关注点，**通过aop方法模块化**。Spring中通过Spring AOP框架支持声明式事务管理。
 
 **使用Spring管理事务，注意头文件的约束导入 : tx**
 
-```
+```xml
 xmlns:tx="http://www.springframework.org/schema/tx"
 
 http://www.springframework.org/schema/tx
@@ -150,7 +150,7 @@ http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 **JDBC事务**
 
-```
+```xml
 <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
        <property name="dataSource" ref="dataSource" />
 </bean>
@@ -158,7 +158,7 @@ http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 **配置好事务管理器后我们需要去配置事务的通知**
 
-```
+```xml
 <!--配置事务通知-->
 <tx:advice id="txAdvice" transaction-manager="transactionManager">
    <tx:attributes>
@@ -185,7 +185,7 @@ http://www.springframework.org/schema/tx/spring-tx.xsd">
 - propagation_never：以非事务方式执行操作，如果当前事务存在则抛出异常。
 - propagation_nested：如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与propagation_required类似的操作
 
-Spring 默认的事务传播行为是 PROPAGATION_REQUIRED，它适合于绝大多数的情况。
+***Spring 默认的事务传播行为是 PROPAGATION_REQUIRED***，它适合于绝大多数的情况。
 
 假设 ServiveX#methodX() 都工作在事务环境下（即都被 Spring 事务增强了），假设程序中存在如下的调用链：Service1#method1()->Service2#method2()->Service3#method3()，那么这 3 个服务类的 3 个方法通过 Spring 的事务传播机制都工作在同一个事务中。
 
@@ -195,7 +195,7 @@ Spring 默认的事务传播行为是 PROPAGATION_REQUIRED，它适合于绝大�
 
 导入aop的头文件！
 
-```
+```xml
 <!--配置aop织入事务-->
 <aop:config>
    <aop:pointcut id="txPointcut" expression="execution(* com.kuang.dao.*.*(..))"/>
@@ -222,9 +222,13 @@ public void test2(){
 为什么需要配置事务？
 
 - 如果不配置，就需要我们手动提交控制事务；
-
 - 事务在项目开发过程非常重要，涉及到数据的一致性的问题，不容马虎！
 
-  
+
+```
+
+```
+
+
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7JicnvW4708YZgXPQAcr3JTia8Y39JMY2G6jbR5C8NP2ecF7ocDpwNU2XeCHKga62ToC8SKrbGnJRiaw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)

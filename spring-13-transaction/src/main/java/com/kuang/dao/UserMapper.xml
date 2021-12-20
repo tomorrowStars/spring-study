@@ -10,6 +10,10 @@
     <insert id="addUser" parameterType="User">
         insert into mybatis.user (id, name, pwd) VALUES (#{id}, #{name}, #{pwd});
     </insert>
+<!--    有错误的sql语句-->
+    <delete id="deleteUserByIdErr" parameterType="_int">
+        delete 11 from mybatis.user where id = #{userId}
+    </delete>
 
     <delete id="deleteUserById" parameterType="_int">
         delete from mybatis.user where id = #{userId}

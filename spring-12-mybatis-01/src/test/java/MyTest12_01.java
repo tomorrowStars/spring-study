@@ -7,6 +7,10 @@ import org.junit.Test;
 import java.util.List;
 
 public class MyTest12_01 {
+
+    /**
+     * 复习mybatis
+     */
     @Test
     public void test01() {
         SqlSession sqlsession = MybatisUtils.getSqlsession(true);
