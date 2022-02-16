@@ -1,6 +1,4 @@
-123
-
-[原文地址：](http://blog.csdn.net/trigl/article/details/50968079)
+**原文地址：(http://blog.csdn.net/trigl/article/details/50968079)**
 
 写这篇博客之前我首先读了《Spring in action》，之后在网上看了一些关于Spring事务管理的文章，感觉都没有讲全，这里就将书上的和网上关于事务的知识总结一下，参考的文章如下：
 
@@ -33,7 +31,7 @@ Spring事务管理涉及的接口的联系如下：
 Spring并不直接管理事务，而是提供了多种事务管理器，他们将事务管理的职责委托给Hibernate或者JTA等持久化机制所提供的相关平台框架的事务来实现。 
 Spring事务管理器的接口是org.springframework.transaction.PlatformTransactionManager，通过这个接口，Spring为各个平台如JDBC、Hibernate等都提供了对应的事务管理器，但是具体的实现就是各个平台自己的事情了。此接口的内容如下：
 
-```
+```java
 Public interface PlatformTransactionManager()...{  
     // 由TransactionDefinition得到TransactionStatus对象
     TransactionStatus getTransaction(TransactionDefinition definition) throws TransactionException; 
@@ -44,14 +42,7 @@ Public interface PlatformTransactionManager()...{
     } 
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
+
 
 从这里可知具体的具体的事务管理机制对Spring来说是透明的，它并不关心那些，那些是对应各个平台需要关心的，所以Spring事务管理的一个优点就是为不同的事务API提供一致的编程模型，如JTA、JDBC、Hibernate、JPA。下面分别介绍各个平台框架实现事务管理的机制。
 
@@ -59,15 +50,13 @@ Public interface PlatformTransactionManager()...{
 
 如果应用程序中直接使用JDBC来进行持久化，DataSourceTransactionManager会为你处理事务边界。为了使用DataSourceTransactionManager，你需要使用如下的XML将其装配到应用程序的上下文定义中：
 
-```
+```xml
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
 ```
 
-- 1
-- 2
-- 3
+
 
 实际上，DataSourceTransactionManager是通过调用java.sql.Connection来管理事务，而后者是通过DataSource获取到的。通过调用连接的commit()方法来提交事务，同样，事务失败则通过调用rollback()方法进行回滚。
 
@@ -75,31 +64,27 @@ Public interface PlatformTransactionManager()...{
 
 如果应用程序的持久化是通过Hibernate实习的，那么你需要使用HibernateTransactionManager。对于Hibernate3，需要在Spring上下文定义中添加如下的`<bean>`声明：
 
-```
+```xml
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 ```
 
-- 1
-- 2
-- 3
 
-sessionFactory属性需要装配一个Hibernate的session工厂，HibernateTransactionManager的实现细节是它将事务管理的职责委托给org.hibernate.Transaction对象，而后者是从Hibernate Session中获取到的。当事务成功完成时，HibernateTransactionManager将会调用Transaction对象的commit()方法，反之，将会调用rollback()方法。
+
+**sessionFactory属性需要装配一个Hibernate的session工厂**，HibernateTransactionManager的实现细节是它将事务管理的职责委托给org.hibernate.Transaction对象，而后者是从Hibernate Session中获取到的。当事务成功完成时，HibernateTransactionManager将会调用Transaction对象的commit()方法，反之，将会调用rollback()方法。
 
 ### 2.1.3 Java持久化API事务（JPA）
 
 Hibernate多年来一直是事实上的Java持久化标准，但是现在Java持久化API作为真正的Java持久化标准进入大家的视野。如果你计划使用JPA的话，那你需要使用Spring的JpaTransactionManager来处理事务。你需要在Spring中这样配置JpaTransactionManager：
 
-```
+```xml
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 ```
 
-- 1
-- 2
-- 3
+
 
 JpaTransactionManager只需要装配一个JPA实体管理工厂（javax.persistence.EntityManagerFactory接口的任意实现）。JpaTransactionManager将与由工厂所产生的JPA EntityManager合作来构建事务。
 
@@ -113,9 +98,7 @@ JpaTransactionManager只需要装配一个JPA实体管理工厂（javax.persiste
     </bean>
 ```
 
-- 1
-- 2
-- 3
+
 
 JtaTransactionManager将事务管理的责任委托给javax.transaction.UserTransaction和javax.transaction.TransactionManager对象，其中事务成功完成通过UserTransaction.commit()方法提交，事务失败通过UserTransaction.rollback()方法回滚。
 
@@ -137,12 +120,7 @@ public interface TransactionDefinition {
 } 
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
+
 
 我们可以发现TransactionDefinition正好用来定义事务属性，下面详细介绍一下各个事务属性。
 
@@ -173,12 +151,7 @@ methodA{
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
+
 
 ```
 //事务属性 PROPAGATION_REQUIRED
@@ -187,10 +160,7 @@ methodB{
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
+
 
 使用spring声明式事务，spring使用AOP来支持声明式事务，会根据事务属性，自动在方法调用之前决定是否开启一个事务，并在方法执行之后决定事务提交或回滚事务。
 
@@ -202,9 +172,7 @@ main{
 }  
 ```
 
-- 1
-- 2
-- 3
+
 
 相当于
 
@@ -230,25 +198,7 @@ Main{
 } 
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
+
 
 Spring保证在methodB方法中所有的调用都获得到一个相同的连接。在调用methodB时，没有一个存在的事务，所以获得一个新的连接，开启了一个新的事务。 
 单独调用MethodA时，在MethodA内又会调用MethodB.
@@ -270,18 +220,7 @@ main{
 } 
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
+
 
 调用MethodA时，环境中没有事务，所以开启一个新的事务.当在MethodA中调用MethodB时，环境中已经有了一个事务，所以methodB就加入当前事务。
 
@@ -299,15 +238,7 @@ methodB(){
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
+
 
 单纯的调用methodB时，methodB方法是非事务的执行的。当调用methdA时,methodB则加入了methodA的事务中,事务地执行。
 
@@ -325,15 +256,7 @@ methodA(){
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
+
 
 当单独调用methodB时，因为当前没有一个活动的事务，则会抛出异常throw new IllegalTransactionStateException(“Transaction propagation ‘mandatory’ but no existing transaction found”);当调用methodA时，methodB则加入到methodA的事务中，事务地执行。
 
@@ -353,17 +276,7 @@ methodB(){
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
+
 
 调用A方法：
 
@@ -373,9 +286,7 @@ main(){
 }
 ```
 
-- 1
-- 2
-- 3
+
 
 相当于
 
@@ -411,35 +322,7 @@ main(){
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
+
 
 在这里，我把ts1称为外层事务，ts2称为内层事务。从上面的代码可以看出，ts2与ts1是两个独立的事务，互不相干。Ts2是否成功并不依赖于 ts1。如果methodA方法在调用methodB方法后的doSomeThingB方法失败了，而methodB方法所做的结果依然被提交。而除了 methodB之外的其它代码导致的结果却被回滚了。使用PROPAGATION_REQUIRES_NEW,需要使用 JtaTransactionManager作为事务管理器。
 
@@ -463,17 +346,7 @@ methodB(){
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
+
 
 如果单独调用methodB方法，则按REQUIRED属性执行。如果调用methodA方法，相当于下面的效果：
 
@@ -503,29 +376,7 @@ main(){
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
+
 
 当methodB方法调用之前，调用setSavepoint方法，保存当前的状态到savepoint。如果methodB方法调用失败，则恢复到之前保存的状态。但是需要注意的是，这时的事务并没有进行提交，如果后续的代码(doSomeThingB()方法)调用失败，则回滚包括methodB方法的所有操作。
 
@@ -564,8 +415,7 @@ PROPAGATION_REQUIRED应该是我们首先的事务传播行为。它能够满足
     select salary from employee empId ="Mary";  
 ```
 
-- 1
-- 2
+
 
 在事务2中，这时财务人员修改了Mary的工资为2000,并提交了事务.
 
@@ -575,9 +425,7 @@ PROPAGATION_REQUIRED应该是我们首先的事务传播行为。它能够满足
     con2.commit();  
 ```
 
-- 1
-- 2
-- 3
+
 
 在事务1中，Mary 再次读取自己的工资时，工资变为了2000
 
@@ -586,8 +434,7 @@ PROPAGATION_REQUIRED应该是我们首先的事务传播行为。它能够满足
     select salary from employee empId ="Mary"; 
 ```
 
-- 1
-- 2
+
 
 在一个事务中前后两次读取的结果并不一致，导致了不可重复读。
 
@@ -600,8 +447,7 @@ PROPAGATION_REQUIRED应该是我们首先的事务传播行为。它能够满足
     Select * from employee where salary =1000; 
 ```
 
-- 1
-- 2
+
 
 共读取10条记录
 
@@ -613,9 +459,7 @@ PROPAGATION_REQUIRED应该是我们首先的事务传播行为。它能够满足
     con2.commit();  
 ```
 
-- 1
-- 2
-- 3
+
 
 事务1再次读取所有工资为1000的员工
 
@@ -624,8 +468,7 @@ PROPAGATION_REQUIRED应该是我们首先的事务传播行为。它能够满足
     select * from employee where salary =1000;  
 ```
 
-- 1
-- 2
+
 
 共读取到了11条记录，这就产生了幻像读。
 
@@ -670,13 +513,7 @@ public interface TransactionStatus{
 } 
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
+
 
 可以发现这个接口描述的是一些处理事务提供简单的控制事务执行和查询事务状态的方法，在回滚或提交的时候需要应用对应的事务状态。
 
@@ -706,14 +543,7 @@ Spring提供两种方式的编程式事务管理，分别是：使用Transaction
     }); // 执行execute方法进行事务管理
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
+
 
 使用TransactionCallback()可以返回一个值。如果使用TransactionCallbackWithoutResult则没有返回值。
 
@@ -735,18 +565,7 @@ Spring提供两种方式的编程式事务管理，分别是：使用Transaction
     }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
+
 
 # 4 声明式事务
 
@@ -758,7 +577,7 @@ Spring提供两种方式的编程式事务管理，分别是：使用Transaction
 
 （1）每个Bean都有一个代理
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -803,48 +622,7 @@ Spring提供两种方式的编程式事务管理，分别是：使用Transaction
 </beans>
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
-- 32
-- 33
-- 34
-- 35
-- 36
-- 37
-- 38
-- 39
-- 40
-- 41
-- 42
+
 
 （2）所有Bean共享一个代理基类
 
@@ -896,51 +674,7 @@ Spring提供两种方式的编程式事务管理，分别是：使用Transaction
 </beans>
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
-- 32
-- 33
-- 34
-- 35
-- 36
-- 37
-- 38
-- 39
-- 40
-- 41
-- 42
-- 43
-- 44
-- 45
+
 
 （3）使用拦截器
 
@@ -999,58 +733,7 @@ Spring提供两种方式的编程式事务管理，分别是：使用Transaction
 </beans>
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
-- 32
-- 33
-- 34
-- 35
-- 36
-- 37
-- 38
-- 39
-- 40
-- 41
-- 42
-- 43
-- 44
-- 45
-- 46
-- 47
-- 48
-- 49
-- 50
-- 51
-- 52
+
 
 （4）使用tx标签配置的拦截器
 
@@ -1098,47 +781,7 @@ Spring提供两种方式的编程式事务管理，分别是：使用Transaction
 </beans>
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
-- 32
-- 33
-- 34
-- 35
-- 36
-- 37
-- 38
-- 39
-- 40
-- 41
+
 
 （5）全注解
 
@@ -1176,37 +819,7 @@ Spring提供两种方式的编程式事务管理，分别是：使用Transaction
 </beans>
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
+
 
 此时在DAO上需加上@Transactional注解，如下：
 
@@ -1232,25 +845,7 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
+
 
 ## 4.2 一个声明式事务的实例
 
@@ -1291,31 +886,7 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 </beans>
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
+
 
 **使用的类** 
 BookShopDao
@@ -1333,16 +904,7 @@ public interface BookShopDao {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
+
 
 BookShopDaoImpl
 
@@ -1393,50 +955,7 @@ public class BookShopDaoImpl implements BookShopDao {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
-- 32
-- 33
-- 34
-- 35
-- 36
-- 37
-- 38
-- 39
-- 40
-- 41
-- 42
-- 43
-- 44
+
 
 BookShopService
 
@@ -1447,10 +966,7 @@ public interface BookShopService {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
+
 
 BookShopServiceImpl
 
@@ -1496,45 +1012,7 @@ public class BookShopServiceImpl implements BookShopService {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
-- 32
-- 33
-- 34
-- 35
-- 36
-- 37
-- 38
-- 39
+
 
 Cashier
 
@@ -1546,11 +1024,7 @@ public interface Cashier {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
+
 
 CashierImpl：CashierImpl.checkout和bookShopService.purchase联合测试了事务的传播行为
 
@@ -1578,27 +1052,7 @@ public class CashierImpl implements Cashier {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
+
 
 BookStockException
 
@@ -1636,38 +1090,7 @@ public class BookStockException extends RuntimeException {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
-- 32
+
 
 UserAccountException
 
@@ -1705,37 +1128,7 @@ public class UserAccountException extends RuntimeException {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
+
 
 测试类
 
@@ -1787,50 +1180,6 @@ public class SpringTransitionTest {
 }
 ```
 
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
-- 14
-- 15
-- 16
-- 17
-- 18
-- 19
-- 20
-- 21
-- 22
-- 23
-- 24
-- 25
-- 26
-- 27
-- 28
-- 29
-- 30
-- 31
-- 32
-- 33
-- 34
-- 35
-- 36
-- 37
-- 38
-- 39
-- 40
-- 41
-- 42
-- 43
-- 44
-- 45
+
 
 *OVER*

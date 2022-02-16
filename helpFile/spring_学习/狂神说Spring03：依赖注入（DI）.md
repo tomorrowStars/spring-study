@@ -12,15 +12,21 @@
 
 Dependency Injection
 
+# 一：概念
+
 > 概念
 
 - 依赖注入（Dependency Injection,DI）。
 - 依赖 : 指Bean对象的创建依赖于容器 . Bean对象的依赖资源 .
 - 注入 : 指Bean对象所依赖的资源 , 由容器来设置和装配 .
 
+# 二：构造器注入
+
 > 构造器注入
 
 我们在之前的案例已经讲过了
+
+# 三：Set 注入 （重点）
 
 > Set 注入 （重点）
 
@@ -120,7 +126,7 @@ Student.java
  }
 ```
 
-1、**常量注入**
+## 1、**常量注入**
 
 ```xml
  <bean id="student" class="com.kuang.pojo.Student">
@@ -142,7 +148,7 @@ Student.java
  }
 ```
 
-2、**Bean注入** 
+## 2、**Bean注入** 
 
 注意点：这里的值是一个引用，ref
 
@@ -157,7 +163,7 @@ Student.java
  </bean>
 ```
 
-3、**数组注入**
+## 3、**数组注入**
 
 ```xml
  <bean id="student" class="com.kuang.pojo.Student">
@@ -173,7 +179,7 @@ Student.java
  </bean>
 ```
 
-4、**List注入**
+## 4、**List注入**
 
 ```xml
  <property name="hobbys">
@@ -185,7 +191,7 @@ Student.java
  </property>
 ```
 
-5、**Map注入**
+## 5、**Map注入**
 
 ```xml
  <property name="card">
@@ -196,7 +202,7 @@ Student.java
  </property>
 ```
 
-6、**set注入**
+## 6、**set注入**
 
 ```xml
  <property name="games">
@@ -208,13 +214,13 @@ Student.java
  </property>
 ```
 
-7、**Null注入**
+## 7、**Null注入**
 
 ```xml
  <property name="wife"><null/></property>
 ```
 
-8、**Properties注入**
+## 8、**Properties注入**
 
 ```xml
  <property name="info">
@@ -230,7 +236,15 @@ Student.java
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7K5cyS8ZRTpajtSInicNHbMYGHEFnrCA8Jyr6ian5MWrUHtnKBpYYTTtysbp5UPYKQxSiaUHJibPKlicuQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
+# 四：p命名和c命名注入
+
 > p命名和c命名注入
+>
+> - P : Set 注入
+>
+> - C: 就是所谓的构造器注入
+
+
 
 User.java ：【注意：这里没有有参构造器！】
 
@@ -307,7 +321,7 @@ User.java ：【注意：这里没有有参构造器！】
 </beans>
 ```
 
-
+# 四：Bean的作用域
 
 > Bean的作用域
 

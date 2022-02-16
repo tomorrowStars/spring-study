@@ -16,7 +16,7 @@ Hello，Spring
 
 上一期中我们理解了IOC的基本思想，我们现在来看下Spring的应用：
 
-## HelloSpring
+## 一： HelloSpring
 
 > 导入Jar包
 
@@ -141,7 +141,7 @@ OK , 到了现在 , 我们彻底不用再程序中去改动了 , 要实现不同
 
 
 
-## IOC创建对象方式
+## 二：IOC创建对象方式
 
 
 
@@ -258,7 +258,7 @@ public void testT(){
 
 结论：在配置文件加载的时候。其中管理的对象都已经初始化了！
 
-## Spring配置
+## 三：Spring配置
 
 > 别名
 

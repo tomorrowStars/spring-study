@@ -13,6 +13,17 @@
 
     <context:annotation-config/>
 
+<!--    dbcp-->
+    <bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource">
+    </bean>
+<!--    hibernateSessionFactor-->
+    <bean id="sessionFactory2" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource2"/>
+    </bean>
+<!--    HibernateTransactionManager-->
+    <bean class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory2"/>
+    </bean>
     <!--    数据源-->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>

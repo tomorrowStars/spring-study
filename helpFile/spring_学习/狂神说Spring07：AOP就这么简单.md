@@ -344,7 +344,7 @@ aop:aspectj-autoproxy：说明
 
 # 附录1
 
-# [spring配置事务管理为什么用aop:advisor](https://www.cnblogs.com/wmguang/p/14843834.html)
+# ---[spring配置事务管理为什么用aop:advisor](https://www.cnblogs.com/wmguang/p/14843834.html)
 
 事务配置有aop:aspect和aop:advisor两种方式,但是在spring的事务管理的配置中会用aop:advisor配置,而不是aop:aspect
 
@@ -366,9 +366,11 @@ aop:aspect可以有多个pointcut,只能以类和方法作为参数.而aop:advis
 
 
 
-# 附录2
+# 附录2 
 
-### Spring中的几种事务处理方式
+# ---Spring中的几种事务处理方式
+
+
 
 - 博客分类：
 
@@ -485,7 +487,7 @@ public class userserviceimpl implements userservice {
 
 为了在业务类中使用事务管理功能,有如下几个方法：
 
-***1、用原始的transactionfactorybean的app.xml基本配置：***
+## ***1、用原始的transactionfactorybean的app.xml基本配置：***
 
 ```xml
 <!--导入dao层的配置-->
@@ -523,7 +525,7 @@ userserviceimpl usi = (userserviceimpl)ctx.getbean("userserviceimpl");
 
 
 
-***2、用tx/aop命名空间配置：***
+## ***2、用tx/aop命名空间配置：***
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -568,7 +570,10 @@ userservice usi = (userservice)ctx.getbean("userserviceimpltarget");
 
 
 
-***3、使用@transactional注解配置声明事务(最简单实用的方法)：***
+## ***3、使用@transactional注解配置声明事务(最简单实用的方法)：***
+
+
+
 在需要事务管理增强的业务类加入@transactional注解标记,如：
 
 ```java

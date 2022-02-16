@@ -123,12 +123,12 @@ public void test2(){
 
 Spring在不同的事务管理API之上定义了一个抽象层，使得开发人员不必了解底层的事务管理API就可以使用Spring的事务管理机制。Spring支持编程式事务管理和声明式的事务管理。
 
-**编程式事务管理**
+## **编程式事务管理**
 
 - 将事务管理代码嵌到业务方法中来控制事务的提交和回滚
 - 缺点：必须在每个事务操作业务逻辑中包含额外的事务管理代码
 
-**声明式事务管理**
+## **声明式事务管理**
 
 - 一般情况下比编程式事务好用。
 - 将事务管理代码从业务方法中分离出来，以声明的方式来实现事务管理。
@@ -232,3 +232,277 @@ public void test2(){
 
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7JicnvW4708YZgXPQAcr3JTia8Y39JMY2G6jbR5C8NP2ecF7ocDpwNU2XeCHKga62ToC8SKrbGnJRiaw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+
+
+
+
+
+# 3，附录1
+
+# ---[spring配置事务管理为什么用aop:advisor](https://www.cnblogs.com/wmguang/p/14843834.html)
+
+事务配置有aop:aspect和aop:advisor两种方式,但是在spring的事务管理的配置中会用aop:advisor配置,而不是aop:aspect
+
+aop:aspect可以有多个pointcut,只能以类和方法作为参数.而aop:advisor只能有一个pointcut,但是aop:advisor可以接受策略参数,在spring中事务配置使用策略方式,这种方式只能用aop:advisor配置
+
+***以 <aop:pointcut id="serviceMethod" expression="execution(* ..Service.*(..))" />为例讲解***
+
+首先：这个表达式是分为4块的，即：方法返回类型 包 +（子包）+ 方法名 + 参数个数或者类型
+
+1、第一个 * 表示：对任意的返回类型方法进行匹配
+
+2、第二个 * 表示：  对任意的包并且包的最后是以Service结尾的包
+
+3、第三个 * 表示：  对任意的方法名进行匹配
+
+ 4、第四个(..)表示： 通配，即方法中可以有0个或者多个参数，如果想执行参数为2个，即(*, String)表示2个参数，第二个参数为String类型。
+
+到了这里，AOP的思想和使用相信大家就没问题了！
+
+
+
+# 4，附录2 
+
+# ---Spring中的几种事务处理方式
+
+
+
+- 博客分类：
+
+- 
+
+- [spring](https://www.iteye.com/category/118036)
+
+[Spring](http://www.iteye.com/blogs/tag/Spring)[Bean](http://www.iteye.com/blogs/tag/Bean)[配置管理](http://www.iteye.com/blogs/tag/配置管理)[DAO](http://www.iteye.com/blogs/tag/DAO)[AOP](http://www.iteye.com/blogs/tag/AOP) 
+
+1、用原始的transactionfactorybean的,代理dao事务处理
+2、用aop:config声明要进行事务增强的切面,用tx:advice声明具体方法的事务属性,及应用到的事务管理器
+3、使用@transactional注解配置声明事务
+
+***如有一代表用户的域对象user:***
+
+```java
+package com.domain;
+import java.io.serializable;
+public class user implements serializable{
+    private int user_id;
+    private string user_name;
+    private string user_password;
+    private string user_desc;
+....//省略set、get方法
+}
+
+```
+
+***user的数据库操作接口：***
+
+```java
+package com.dao;
+import com.domain.user;
+public interface userdao {
+    public void adduser(user user);
+}
+
+```
+
+
+
+有一继承spring jdbc支持类的userdao接口实现类,实现添加一个user的方法。它需要注入一个spring jdbc模板类jdbctemplate：
+
+```java
+package com.dao.jdbc;
+import com.domain.user;
+import com.dao.userdao;
+import org.springframework.jdbc.core.support.jdbcdaosupport;
+public class userjdbcdao extends jdbcdaosupport implements userdao{
+    public void adduser(user user){
+         string  sql =
+         "insert into user(user_name,user_password,user_desc) values(?,?,?)";
+        object[] params = new object[]{
+           user.getuser_name(),
+           user.getuser_password(),
+           user.getuser_desc()
+        } ;
+        this.getjdbctemplate().update(sql, params);
+    }
+}
+
+```
+
+
+
+以上dao层的类对应的bean的基本配置文件***app_dao.xml***如下
+
+（数据源的属性放入了外部的资源文件"prop.properties"）：
+
+```xml
+ 	<bean class="org.springframework.beans.factory.config.propertyplaceholderconfigurer">
+        <property name="location" value="classpath:prop.properties"/>
+    </bean>
+<!--数据源-->
+    <bean id="datasource" class="org.apache.commons.dbcp.basicdatasource"
+     destroy-method="close">
+        <property name="driverclassname" value="${jdbc.driverclassname}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+<!--spring jdbc模板bean，它注入了上面的数据源-->
+    <bean id="jdbctemplate" class="org.springframework.jdbc.core.jdbctemplate">
+        <property name="datasource" ref="datasource"/>
+    </bean>
+<!--user数据操作的bean声明，它注入了上面的spring jdbc模板bean:jdbctemplate-->
+    <bean id="userjdbcdao"    class="com.dao.jdbc.userjdbcdao">
+		<property name="jdbctemplate" ref="jdbctemplate"/>
+    </bean>
+</beans>
+
+```
+
+
+
+这里我简单地模拟业务类(业务接口userservice省略)：
+
+```java
+package com.service.impl;
+import com.dao.userdao;
+import com.domain.user;
+import com.service.userservice;
+public class userserviceimpl implements userservice {
+    private userdao userdao;
+    public void setuserdao(userdao userdao){
+        this.userdao = userdao;
+    }
+    public void adduser(user user){
+        this.userdao.adduser(user);
+    }
+}
+```
+
+为了在业务类中使用事务管理功能,有如下几个方法：
+
+## ***1、用原始的transactionfactorybean的app.xml基本配置：***
+
+```xml
+<!--导入dao层的配置-->
+    <import resource="classpath:app_dao.xml"/>
+<!--spring jdbc的事务管理bean,引入了dbcp数据源-->
+    <bean id="txmanager" class="org.springframework.jdbc.datasource.datasourcetransactionmanager">
+        <property name="datasource" ref="datasource"/>
+    </bean>
+<!--业务类bean-->
+    <bean id="userserviceimpltarget" class="com.service.impl.userserviceimpl">
+        <property name="userdao" ref="userjdbcdao"/>
+    </bean>
+<!--应用原始的transactionfactorybean进行事务管理bean的声明-->
+    <bean id="userserviceimpl"
+          class="org.springframework.transaction.interceptor.transactionproxyfactorybean">
+		<!--指定事务管理bean-->
+        <property name="transactionmanager" ref="txmanager"/>
+        <!--指定业务bean-->
+        <property name="target" ref="userserviceimpltarget"/>
+		<!--事务的属性设置列表-->
+        <property name="transactionattributes">
+            <props>
+                <prop key="add*">propagation_required,isolation_serializable</prop>
+                <!--设置事务为只读时，添加数据将会产生异常-->
+                <!--<prop key="add*">propagation_required,isolation_serializable,readonly</prop>-->
+            </props>
+        </property>
+    </bean>
+```
+
+***测试：***
+......
+userserviceimpl usi = (userserviceimpl)ctx.getbean("userserviceimpl");
+......
+
+
+
+## ***2、用tx/aop命名空间配置：***
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<beans .....
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsp:schemalocation="http://www.springframework.org/schema/beans
+    ...........
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+    
+    <import resource="classpath:app_dao.xml"/>
+    
+    <bean id="txmanager" class="org.springframework.jdbc.datasource.datasourcetransactionmanager">
+        <property name="datasource" ref="datasource"/>
+    </bean>
+
+    <bean id="userserviceimpltarget" class="com.service.impl.userserviceimpl">
+        <property name="userdao" ref="userjdbcdao"/>
+    </bean>
+<!--应用tx/aop命名空间进行事务声明-->
+<!--用tx:advice声明具体方法的事务属性,及应用到的事务管理器-->
+    <tx:advice id="txadvice" transaction-manager="txmanager">
+        <tx:attributes>
+            <tx:method name="add*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+<!--用aop:config声明要进行事务增强的切面-->
+    <aop:config>
+        <aop:pointcut id="servicemethod"
+        expression="execution(* com.service..add*(..))"/>
+        <aop:advisor pointcut-ref="servicemethod" advice-ref="txadvice"/>
+    </aop:config>
+</beans>
+```
+
+
+
+***测试：***
+.......
+userservice usi = (userservice)ctx.getbean("userserviceimpltarget");
+..........
+
+
+
+## ***3、使用@transactional注解配置声明事务(最简单实用的方法)：***
+
+
+
+在需要事务管理增强的业务类加入@transactional注解标记,如：
+
+```java
+......
+import org.springframework.transaction.annotation.transactional; //注解式事务
+@transactional(readonly=false) //对业务类进行事务增强的标注
+public class userserviceimpl implements userservice {
+...........
+}
+```
+
+再在配置文件中用
+
+```xml
+<!--驱动自动为标记@transactional注解的类织入事务管理增强：-->
+	<tx:annotation-driven>
+    
+	<import resource="classpath:app_dao.xml"/>
+        
+    <bean id="txmanager" class="org.springframework.jdbc.datasource.datasourcetransactionmanager">
+        <property name="datasource" ref="datasource"/>
+    </bean>
+    <!--注解式事务配置驱动-->
+    <tx:annotation-driven transaction-manager="txmanager" proxy-target-class="true"/>
+    <!--业务类bean的实现类标注了@transactional注解，所以会被
+tx:annotation-driven注解驱动自动织入事务增强-->
+    <bean id="userservice" class="com.service.impl.userserviceimpl">
+        <property name="userdao" ref="userjdbcdao"/>
+    </bean>
+
+```
+
+
+
+***测试：***
+.........
+userserviceimpl usi = (userserviceimpl)ctx.getbean("userservice");
+.........
