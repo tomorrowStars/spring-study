@@ -83,7 +83,7 @@ SpringAOP中，通过Advice定义横切逻辑，Spring中支持5种类型的Advi
 
 【重点】使用AOP织入，需要导入一个依赖包！
 
-```
+```xml
 <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
 <dependency>
    <groupId>org.aspectj</groupId>
@@ -94,13 +94,13 @@ SpringAOP中，通过Advice定义横切逻辑，Spring中支持5种类型的Advi
 
 # 3, 实现方式
 
-## **第一种方式**
+## **第一种方式: **通过 Spring API 实现****
 
 **通过 Spring API 实现**
 
 首先编写我们的业务接口和实现类
 
-```
+```java
 public interface UserService {
 
    public void add();
@@ -138,15 +138,15 @@ public class UserServiceImpl implements UserService{
 
 然后去写我们的增强类 , 我们编写两个 , 一个前置增强 一个后置增强
 
-```
+```java
 public class Log implements MethodBeforeAdvice {
 
    //method : 要执行的目标对象的方法
-   //objects : 被调用的方法的参数
-   //Object : 目标对象
+   //args : 被调用的方法的参数
+   //target : 目标对象
    @Override
-   public void before(Method method, Object[] objects, Object o) throws Throwable {
-       System.out.println( o.getClass().getName() + "的" + method.getName() + "方法被执行了");
+   public void before(Method method, Object[] args, Object target) throws Throwable {
+       System.out.println( target.getClass().getName() + "的" + method.getName() + "方法被执行了");
   }
 }
 public class AfterLog implements AfterReturningAdvice {
@@ -165,7 +165,7 @@ public class AfterLog implements AfterReturningAdvice {
 
 最后去spring的文件中注册 , 并实现aop切入实现 , 注意导入约束 .
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -194,7 +194,7 @@ public class AfterLog implements AfterReturningAdvice {
 
 测试
 
-```
+```java
 public class MyTest {
    @Test
    public void test(){
@@ -237,7 +237,7 @@ Spring的Aop就是将公共的业务 (日志 , 安全等) 和领域业务结合�
 
 第一步 : 写我们自己的一个切入类
 
-```
+```java
 public class DiyPointcut {
 
    public void before(){
@@ -252,9 +252,10 @@ public class DiyPointcut {
 
 去spring中配置
 
-```
+```xml
 <!--第二种方式自定义实现-->
 <!--注册bean-->
+<bean id="userService" class="com.kuang.service.UserServiceImpl"/>
 <bean id="diy" class="com.kuang.config.DiyPointcut"/>
 
 <!--aop的配置-->
@@ -270,7 +271,7 @@ public class DiyPointcut {
 
 测试：
 
-```
+```java
 public class MyTest {
    @Test
    public void test(){
@@ -289,7 +290,7 @@ public class MyTest {
 
 第一步：编写一个注解实现的增强类
 
-```
+```java
 package com.kuang.config;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -324,7 +325,8 @@ public class AnnotationPointcut {
 
 第二步：在Spring配置文件中，注册bean，并增加支持注解的配置
 
-```
+```xml
+<bean id="userServiceImpl" class="com.kuang.service.UserServiceImpl"/>
 <!--第三种方式:注解实现-->
 <bean id="annotationPointcut" class="com.kuang.config.AnnotationPointcut"/>
 <aop:aspectj-autoproxy/>

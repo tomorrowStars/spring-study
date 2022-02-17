@@ -163,11 +163,12 @@ http://www.springframework.org/schema/tx/spring-tx.xsd">
 <tx:advice id="txAdvice" transaction-manager="transactionManager">
    <tx:attributes>
        <!--配置哪些方法使用什么样的事务,配置事务的传播特性-->
-       <tx:method name="add" propagation="REQUIRED"/>
-       <tx:method name="delete" propagation="REQUIRED"/>
-       <tx:method name="update" propagation="REQUIRED"/>
+       <!--*****【name="get*"】：以get开头的方法******-->
+       <tx:method name="add*" propagation="REQUIRED"/>
+       <tx:method name="delete*" propagation="REQUIRED"/>
+       <tx:method name="update*" propagation="REQUIRED"/>
        <tx:method name="search*" propagation="REQUIRED"/>
-       <tx:method name="get" read-only="true"/>
+       <tx:method name="get*" read-only="true"/>
        <tx:method name="*" propagation="REQUIRED"/>
    </tx:attributes>
 </tx:advice>
@@ -207,7 +208,7 @@ http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 删掉刚才插入的数据，再次测试！
 
-```
+```java
 @Test
 public void test2(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -215,6 +216,74 @@ public void test2(){
    List<User> user = mapper.selectUser();
    System.out.println(user);
 }
+```
+
+**完整xml**
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd ">
+<!--    数据源-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://localhost:3306?useSsl=true&amp;useunicode=true&amp;characterSetting=utf8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+<!--    sqlSession工厂bean-->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath*:com/kuang/dao/*.xml"/>
+     </bean>
+
+<!--    dao的bean-->
+    <bean id="userDao" class="com.kuang.dao.UserDaoImpl">
+        <property name="sqlSessionFactory" ref="sessionFactory"/>
+    </bean>
+<!--    Service的bean-->
+    <bean class="com.kuang.service.UserService" id="userService"/>
+
+<!--配置事务处理-->
+    <!--    配置事务管理器（此处使用JDBC）-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--    配置事务通知-->
+    <tx:advice id="txAdvice" transaction-manager="dataSourceTransactionManager">
+        <tx:attributes>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+<!--            <tx:method name="get*" read-only="true"/>-->
+<!--            <tx:method name="*" propagation="REQUIRED"/>-->
+        </tx:attributes>
+    </tx:advice>
+<!--    配置 AOP织入事务-->
+    <aop:config>
+<!--        配置切入点-->
+<!--        切入点在dao的上-->
+        <aop:pointcut id="txPoint" expression="execution(* com.kuang.dao.*.*(..));"/>
+<!--        切入点在service的包上-->
+        <aop:pointcut id="txPoint2" expression="execution(* com.kuang.service.*.*(..))"/>
+        <!--        配置环绕-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint2"/>
+
+    </aop:config>
+
+</beans>
 ```
 
 > 思考问题？
@@ -435,7 +504,7 @@ userserviceimpl usi = (userserviceimpl)ctx.getbean("userserviceimpl");
     <bean id="txmanager" class="org.springframework.jdbc.datasource.datasourcetransactionmanager">
         <property name="datasource" ref="datasource"/>
     </bean>
-
+<!--业务类bean-->
     <bean id="userserviceimpltarget" class="com.service.impl.userserviceimpl">
         <property name="userdao" ref="userjdbcdao"/>
     </bean>
@@ -448,9 +517,8 @@ userserviceimpl usi = (userserviceimpl)ctx.getbean("userserviceimpl");
     </tx:advice>
 <!--用aop:config声明要进行事务增强的切面-->
     <aop:config>
-        <aop:pointcut id="servicemethod"
-        expression="execution(* com.service..add*(..))"/>
-        <aop:advisor pointcut-ref="servicemethod" advice-ref="txadvice"/>
+        <aop:pointcut id="servicemethod" expression="execution(* com.service..add*(..))"/>
+        <aop:advisor advice-ref="txadvice" pointcut-ref="servicemethod"/>
     </aop:config>
 </beans>
 ```
@@ -482,18 +550,20 @@ public class userserviceimpl implements userservice {
 再在配置文件中用
 
 ```xml
-<!--驱动自动为标记@transactional注解的类织入事务管理增强：-->
+	<!--驱动自动为标记@transactional注解的类织入事务管理增强：-->
 	<tx:annotation-driven>
     
-	<import resource="classpath:app_dao.xml"/>
+    <import resource="classpath:app_dao.xml"/>
         
+    <!--配置事务管理器（此处使用JDBC）-->        
     <bean id="txmanager" class="org.springframework.jdbc.datasource.datasourcetransactionmanager">
         <property name="datasource" ref="datasource"/>
     </bean>
+        
     <!--注解式事务配置驱动-->
     <tx:annotation-driven transaction-manager="txmanager" proxy-target-class="true"/>
-    <!--业务类bean的实现类标注了@transactional注解，所以会被
-tx:annotation-driven注解驱动自动织入事务增强-->
+        
+    <!--业务类bean的实现类标注了@transactional注解，所以会被tx:annotation-driven注解驱动自动织入事务增强-->
     <bean id="userservice" class="com.service.impl.userserviceimpl">
         <property name="userdao" ref="userjdbcdao"/>
     </bean>

@@ -295,7 +295,7 @@ public class User {
 
 2、此时配置文件内容
 
-```java
+```xml
 <context:annotation-config/>
 
 <bean id="dog" class="com.Dog"/>
