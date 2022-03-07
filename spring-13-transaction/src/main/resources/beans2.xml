@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd ">
+
+<!--    <context:annotation-config/>-->
+<!--&lt;!&ndash;    dbcp&ndash;&gt;-->
+<!--    <bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource">-->
+<!--    </bean>-->
+<!--&lt;!&ndash;    hibernateSessionFactor&ndash;&gt;-->
+<!--    <bean id="sessionFactory2" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">-->
+<!--        <property name="dataSource" ref="dataSource2"/>-->
+<!--    </bean>-->
+<!--&lt;!&ndash;    HibernateTransactionManager&ndash;&gt;-->
+<!--    <bean class="org.springframework.orm.hibernate3.HibernateTransactionManager">-->
+<!--        <property name="sessionFactory" ref="sessionFactory2"/>-->
+<!--    </bean>-->
+
+
+    <!--    数据源-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url"
+                  value="jdbc:mysql://localhost:3306?useSsl=true&amp;useunicode=true&amp;characterSetting=utf8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123456"/>
+    </bean>
+
+<!--    sqlSession工厂bean-->
+    <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath*:com/kuang/dao/*.xml"/>
+     </bean>
+
+<!--    dao的bean-->
+    <bean id="userDao" class="com.kuang.dao.UserDaoImpl">
+        <property name="sqlSessionFactory" ref="sessionFactory"/>
+    </bean>
+<!--    Service的bean-->
+    <bean class="com.kuang.service.UserService" id="userService"/>
+
+<!--配置事务处理-->
+    <!--    配置事务管理器（此处使用JDBC）-->
+    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--    配置事务通知-->
+    <tx:advice id="txAdvice" transaction-manager="dataSourceTransactionManager">
+        <tx:attributes>
+            <tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+<!--            <tx:method name="get*" read-only="true"/>-->
+<!--            <tx:method name="*" propagation="REQUIRED"/>-->
+        </tx:attributes>
+    </tx:advice>
+<!--    <tx:advice id="txAdvice2" transaction-manager="dataSourceTransactionManager">-->
+<!--        -->
+<!--    </tx:advice>-->
+    <!--    配置 AOP织入事务-->
+    <aop:config>
+        <!--        配置切入点-->
+<!--        切入点在dao的上-->
+        <aop:pointcut id="txPoint" expression="execution(* com.kuang.dao.*.*(..));"/>
+<!--        切入点在service的包上-->
+        <aop:pointcut id="txPoint2" expression="execution(* com.kuang.service.*.*(..))"/>
+        <!--        配置环绕-->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint2"/>
+
+    </aop:config>
+
+</beans>

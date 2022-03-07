@@ -83,7 +83,7 @@ SpringAOP中，通过Advice定义横切逻辑，Spring中支持5种类型的Advi
 
 【重点】使用AOP织入，需要导入一个依赖包！
 
-```
+```xml
 <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
 <dependency>
    <groupId>org.aspectj</groupId>
@@ -94,13 +94,13 @@ SpringAOP中，通过Advice定义横切逻辑，Spring中支持5种类型的Advi
 
 # 3, 实现方式
 
-## **第一种方式**
+## **第一种方式: **通过 Spring API 实现****
 
 **通过 Spring API 实现**
 
 首先编写我们的业务接口和实现类
 
-```
+```java
 public interface UserService {
 
    public void add();
@@ -138,15 +138,15 @@ public class UserServiceImpl implements UserService{
 
 然后去写我们的增强类 , 我们编写两个 , 一个前置增强 一个后置增强
 
-```
+```java
 public class Log implements MethodBeforeAdvice {
 
    //method : 要执行的目标对象的方法
-   //objects : 被调用的方法的参数
-   //Object : 目标对象
+   //args : 被调用的方法的参数
+   //target : 目标对象
    @Override
-   public void before(Method method, Object[] objects, Object o) throws Throwable {
-       System.out.println( o.getClass().getName() + "的" + method.getName() + "方法被执行了");
+   public void before(Method method, Object[] args, Object target) throws Throwable {
+       System.out.println( target.getClass().getName() + "的" + method.getName() + "方法被执行了");
   }
 }
 public class AfterLog implements AfterReturningAdvice {
@@ -165,7 +165,7 @@ public class AfterLog implements AfterReturningAdvice {
 
 最后去spring的文件中注册 , 并实现aop切入实现 , 注意导入约束 .
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -238,7 +238,7 @@ Spring的Aop就是将公共的业务 (日志 , 安全等) 和领域业务结合�
 
 第一步 : 写我们自己的一个切入类
 
-```
+```java
 public class DiyPointcut {
 
    public void before(){
@@ -253,9 +253,10 @@ public class DiyPointcut {
 
 去spring中配置
 
-```
+```xml
 <!--第二种方式自定义实现-->
 <!--注册bean-->
+<bean id="userService" class="com.kuang.service.UserServiceImpl"/>
 <bean id="diy" class="com.kuang.config.DiyPointcut"/>
 
 <!--aop的配置-->
@@ -271,7 +272,7 @@ public class DiyPointcut {
 
 测试：
 
-```
+```java
 public class MyTest {
    @Test
    public void test(){
@@ -290,7 +291,7 @@ public class MyTest {
 
 第一步：编写一个注解实现的增强类
 
-```
+```java
 package com.kuang.config;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -325,7 +326,8 @@ public class AnnotationPointcut {
 
 第二步：在Spring配置文件中，注册bean，并增加支持注解的配置
 
-```
+```xml
+<bean id="userServiceImpl" class="com.kuang.service.UserServiceImpl"/>
 <!--第三种方式:注解实现-->
 <bean id="annotationPointcut" class="com.kuang.config.AnnotationPointcut"/>
 <aop:aspectj-autoproxy/>
@@ -343,27 +345,273 @@ aop:aspectj-autoproxy：说明
 
 
 
+# 附录1
 
+# ---[spring配置事务管理为什么用aop:advisor](https://www.cnblogs.com/wmguang/p/14843834.html)
+
+事务配置有aop:aspect和aop:advisor两种方式,但是在spring的事务管理的配置中会用aop:advisor配置,而不是aop:aspect
+
+aop:aspect可以有多个pointcut,只能以类和方法作为参数.而aop:advisor只能有一个pointcut,但是aop:advisor可以接受策略参数,在spring中事务配置使用策略方式,这种方式只能用aop:advisor配置
+
+***以 <aop:pointcut id="serviceMethod" expression="execution(* ..Service.*(..))" />为例讲解***
+
+首先：这个表达式是分为4块的，即：方法返回类型 包 +（子包）+ 方法名 + 参数个数或者类型
+
+1、第一个 * 表示：对任意的返回类型方法进行匹配
+
+2、第二个 * 表示：  对任意的包并且包的最后是以Service结尾的包
+
+3、第三个 * 表示：  对任意的方法名进行匹配
+
+ 4、第四个(..)表示： 通配，即方法中可以有0个或者多个参数，如果想执行参数为2个，即(*, String)表示2个参数，第二个参数为String类型。
 
 到了这里，AOP的思想和使用相信大家就没问题了！
 
 
 
-![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7JicnvW4708YZgXPQAcr3JTia8Y39JMY2G6jbR5C8NP2ecF7ocDpwNU2XeCHKga62ToC8SKrbGnJRiaw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+# 附录2 
 
-视频同步更新
+# ---Spring中的几种事务处理方式
 
-如果觉得帮助到了您，不妨赞赏支持一下吧！
 
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7KaCZTnzpTQ4y0unN9icJaRPdGy06vUfzQgzpibBctoiaZbTiaVibavlK6Ww0OIavHmSBf5luzDibthmgBA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7LBEiaxgibdgic7wYWNIvwhj8xsu8hCvVFXOgVZ3icwleHSeDiaeAZjqA8FhpUxUCumevPok6qViaU2e2Ng/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+- 博客分类：
 
-喜欢此内容的人还喜欢
+-  
 
-[严惩！高层女住户往楼下狂扔100多件东西严惩！高层女住户往楼下狂扔100多件东西...青小小不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[优质基金经理之朱少醒：十年磨一剑！优质基金经理之朱少醒：十年磨一剑！...青橙的养基记录仪不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[一个农村博士的独白：全家为什么只有我读到了博士一个农村博士的独白：全家为什么只有我读到了博士...CodeSheep不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)
+- [spring](https://www.iteye.com/category/118036)
 
-![img](https://mp.weixin.qq.com/mp/qrcode?scene=10000004&size=102&__biz=Mzg2NTAzMTExNg==&mid=2247484138&idx=1&sn=9fb187c7a2f53cc465b50d18e6518fe9&send_time=)
+[Spring](http://www.iteye.com/blogs/tag/Spring)[Bean](http://www.iteye.com/blogs/tag/Bean)[配置管理](http://www.iteye.com/blogs/tag/配置管理)[DAO](http://www.iteye.com/blogs/tag/DAO)[AOP](http://www.iteye.com/blogs/tag/AOP) 
 
-微信扫一扫
-关注该公众号
+1、用原始的transactionfactorybean的,代理dao事务处理
+2、用aop:config声明要进行事务增强的切面,用tx:advice声明具体方法的事务属性,及应用到的事务管理器
+3、使用@transactional注解配置声明事务
+
+***如有一代表用户的域对象user:***
+
+```java
+package com.domain;
+import java.io.serializable;
+public class user implements serializable{
+    private int user_id;
+    private string user_name;
+    private string user_password;
+    private string user_desc;
+....//省略set、get方法
+}
+
+```
+
+***user的数据库操作接口：***
+
+```java
+
+package com.dao;
+import com.domain.user;
+public interface userdao {
+    public void adduser(user user);
+}
+
+```
+
+
+
+有一继承spring jdbc支持类的userdao接口实现类,实现添加一个user的方法。它需要注入一个spring jdbc模板类jdbctemplate：
+
+```java
+package com.dao.jdbc;
+import com.domain.user;
+import com.dao.userdao;
+import org.springframework.jdbc.core.support.jdbcdaosupport;
+public class userjdbcdao extends jdbcdaosupport implements userdao{
+    public void adduser(user user){
+         string  sql =
+         "insert into user(user_name,user_password,user_desc) values(?,?,?)";
+        object[] params = new object[]{
+           user.getuser_name(),
+           user.getuser_password(),
+           user.getuser_desc()
+        } ;
+        this.getjdbctemplate().update(sql, params);
+    }
+}
+
+```
+
+
+
+以上dao层的类对应的bean的基本配置文件***app_dao.xml***如下
+
+（数据源的属性放入了外部的资源文件"prop.properties"）：
+
+```xml
+ 	<bean class="org.springframework.beans.factory.config.propertyplaceholderconfigurer">
+        <property name="location" value="classpath:prop.properties"/>
+    </bean>
+<!--数据源-->
+    <bean id="datasource" class="org.apache.commons.dbcp.basicdatasource"
+     destroy-method="close">
+        <property name="driverclassname" value="${jdbc.driverclassname}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+<!--spring jdbc模板bean，它注入了上面的数据源-->
+    <bean id="jdbctemplate" class="org.springframework.jdbc.core.jdbctemplate">
+        <property name="datasource" ref="datasource"/>
+    </bean>
+<!--user数据操作的bean声明，它注入了上面的spring jdbc模板bean:jdbctemplate-->
+    <bean id="userjdbcdao"    class="com.dao.jdbc.userjdbcdao">
+		<property name="jdbctemplate" ref="jdbctemplate"/>
+    </bean>
+</beans>
+
+```
+
+
+
+这里我简单地模拟业务类(业务接口userservice省略)：
+
+```java
+package com.service.impl;
+import com.dao.userdao;
+import com.domain.user;
+import com.service.userservice;
+public class userserviceimpl implements userservice {
+    private userdao userdao;
+    public void setuserdao(userdao userdao){
+        this.userdao = userdao;
+    }
+    public void adduser(user user){
+        this.userdao.adduser(user);
+    }
+}
+```
+
+为了在业务类中使用事务管理功能,有如下几个方法：
+
+## ***1、用原始的transactionfactorybean的app.xml基本配置：***
+
+```xml
+<!--导入dao层的配置-->
+    <import resource="classpath:app_dao.xml"/>
+<!--spring jdbc的事务管理bean,引入了dbcp数据源-->
+    <bean id="txmanager" class="org.springframework.jdbc.datasource.datasourcetransactionmanager">
+        <property name="datasource" ref="datasource"/>
+    </bean>
+<!--业务类bean-->
+    <bean id="userserviceimpltarget" class="com.service.impl.userserviceimpl">
+        <property name="userdao" ref="userjdbcdao"/>
+    </bean>
+<!--应用原始的transactionfactorybean进行事务管理bean的声明-->
+    <bean id="userserviceimpl"
+          class="org.springframework.transaction.interceptor.transactionproxyfactorybean">
+		<!--指定事务管理bean-->
+        <property name="transactionmanager" ref="txmanager"/>
+        <!--指定业务bean-->
+        <property name="target" ref="userserviceimpltarget"/>
+		<!--事务的属性设置列表-->
+        <property name="transactionattributes">
+            <props>
+                <prop key="add*">propagation_required,isolation_serializable</prop>
+                <!--设置事务为只读时，添加数据将会产生异常-->
+                <!--<prop key="add*">propagation_required,isolation_serializable,readonly</prop>-->
+            </props>
+        </property>
+    </bean>
+```
+
+***测试：***
+......
+userserviceimpl usi = (userserviceimpl)ctx.getbean("userserviceimpl");
+......
+
+
+
+## ***2、用tx/aop命名空间配置：***
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<beans .....
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsp:schemalocation="http://www.springframework.org/schema/beans
+    ...........
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+    
+    <import resource="classpath:app_dao.xml"/>
+    
+    <bean id="txmanager" class="org.springframework.jdbc.datasource.datasourcetransactionmanager">
+        <property name="datasource" ref="datasource"/>
+    </bean>
+
+    <bean id="userserviceimpltarget" class="com.service.impl.userserviceimpl">
+        <property name="userdao" ref="userjdbcdao"/>
+    </bean>
+<!--应用tx/aop命名空间进行事务声明-->
+<!--用tx:advice声明具体方法的事务属性,及应用到的事务管理器-->
+    <tx:advice id="txadvice" transaction-manager="txmanager">
+        <tx:attributes>
+            <tx:method name="add*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+<!--用aop:config声明要进行事务增强的切面-->
+    <aop:config>
+        <aop:pointcut id="servicemethod"
+        expression="execution(* com.service..add*(..))"/>
+        <aop:advisor pointcut-ref="servicemethod" advice-ref="txadvice"/>
+    </aop:config>
+</beans>
+```
+
+
+
+***测试：***
+.......
+userservice usi = (userservice)ctx.getbean("userserviceimpltarget");
+..........
+
+
+
+## ***3、使用@transactional注解配置声明事务(最简单实用的方法)：***
+
+
+
+在需要事务管理增强的业务类加入@transactional注解标记,如：
+
+```java
+......
+import org.springframework.transaction.annotation.transactional; //注解式事务
+@transactional(readonly=false) //对业务类进行事务增强的标注
+public class userserviceimpl implements userservice {
+...........
+}
+```
+
+再在配置文件中用
+
+```xml
+<!--驱动自动为标记@transactional注解的类织入事务管理增强：-->
+	<tx:annotation-driven>
+    
+	<import resource="classpath:app_dao.xml"/>
+        
+    <bean id="txmanager" class="org.springframework.jdbc.datasource.datasourcetransactionmanager">
+        <property name="datasource" ref="datasource"/>
+    </bean>
+    <!--注解式事务配置驱动-->
+    <tx:annotation-driven transaction-manager="txmanager" proxy-target-class="true"/>
+    <!--业务类bean的实现类标注了@transactional注解，所以会被
+tx:annotation-driven注解驱动自动织入事务增强-->
+    <bean id="userservice" class="com.service.impl.userserviceimpl">
+        <property name="userdao" ref="userjdbcdao"/>
+    </bean>
+
+```
+
+
+
+***测试：***
+.........
+userserviceimpl usi = (userserviceimpl)ctx.getbean("userservice");
+.........

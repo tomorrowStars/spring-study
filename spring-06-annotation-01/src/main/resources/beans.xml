@@ -8,9 +8,12 @@
         http://www.springframework.org/schema/context/spring-context.xsd">
 
 <!--    <context:annotation-config/>-->
-
-<!--    <context:annotation-config/>-->
     <context:component-scan base-package="com.kuang"/>
+    <!--
+    annotation-config：注册了常用的BeanPostProcessor，
+        而这些BeanPostProcessor 就是让常用注解（@AutoWired、@Configuration）生效。
+    component-scan： 做了< context:annotation-config/>所有做的事，除此之外，还扫描注册base-package下的类。
+    -->
 
 
 

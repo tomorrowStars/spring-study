@@ -10,7 +10,7 @@
 
 
 
-# 代理模式
+# 一：代理模式
 
 为什么要学习代理模式，因为AOP的底层机制就是动态代理！
 
@@ -25,7 +25,7 @@
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7LoeicP1O2nfyA6H0XPa9jMLRnfS7LpO0Iic7fEEPFCgRs0ggNXCwf6IKo1tibjPmNSTEYeII5ro7YLQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
-# 静态代理
+# 二：静态代理
 
 **静态代理角色分析**
 
@@ -121,7 +121,7 @@ public class Client {
 
 我们想要静态代理的好处，又不想要静态代理的缺点，所以 , 就有了动态代理 !
 
-# 静态代理再理解
+# 三：静态代理再理解
 
 > #### 静态代理再理解
 
@@ -239,7 +239,7 @@ OK，到了现在代理模式大家应该都没有什么问题了，重点大家
 
 
 
-# 动态代理
+# 四：动态代理
 
 ## 动态代理
 
@@ -427,7 +427,7 @@ public class Client {
 
 我们也可以编写一个通用的动态代理实现的类！所有的代理对象设置为Object即可！
 
-```
+```java
 public class ProxyInvocationHandler implements InvocationHandler {
    private Object target;
 
@@ -491,19 +491,4 @@ public class Test {
 
 ![图片](data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==)
 
-视频同步更新
 
-如果觉得帮助到了您，不妨赞赏支持一下吧！
-
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7KaCZTnzpTQ4y0unN9icJaRPdGy06vUfzQgzpibBctoiaZbTiaVibavlK6Ww0OIavHmSBf5luzDibthmgBA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7LBEiaxgibdgic7wYWNIvwhj8xsu8hCvVFXOgVZ3icwleHSeDiaeAZjqA8FhpUxUCumevPok6qViaU2e2Ng/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-喜欢此内容的人还喜欢
-
-[价值十余万的珠宝首饰被随手扔了…价值十余万的珠宝首饰被随手扔了…...扬子晚报不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[宿迁高铁站附近一辆轿车撞倒灯杆，车头损毁严重宿迁高铁站附近一辆轿车撞倒灯杆，车头损毁严重...宿迁公交查询不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[网友：楚街南门的牌楼何年何月修好？都堵死了网友：楚街南门的牌楼何年何月修好？都堵死了...我的宿迁订阅号不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)
-
-![img](https://mp.weixin.qq.com/mp/qrcode?scene=10000004&size=102&__biz=Mzg2NTAzMTExNg==&mid=2247484130&idx=1&sn=73741a404f7736c02bcdf69f565fe094&send_time=)
-
-微信扫一扫
-关注该公众号

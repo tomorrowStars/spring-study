@@ -10,7 +10,7 @@
 
 
 
-# 方式1,  使用注解开发
+# 一， 方式1,  使用注解开发
 
 > 说明
 
@@ -132,7 +132,7 @@ public class User {
 - singleton：默认的，Spring会采用单例模式创建这个对象。关闭工厂 ，所有的对象都会销毁。
 - prototype：多例模式。关闭工厂 ，所有的对象不会销毁。内部的垃圾回收机制会回收
 
-```
+```java
 @Controller("user")
 @Scope("prototype")
 public class User {
@@ -156,7 +156,9 @@ public class User {
 - 注解完成属性注入
 - 使用过程中， 可以不用扫描，扫描是为了类上的注解
 
-```
+**annotation的作用**
+
+```xml
 <context:annotation-config/>  
 ```
 
@@ -172,9 +174,11 @@ public class User {
 
   
 
-# 方式2,  基于Java类进行配置
+# 二， 方式2,  基于Java类进行配置
 
 ## 1、 常规用法
+
+### 1-1 编写一个`AppConfig`类启动容器
 
 使用Spring的IoC容器，实际上就是通过类似XML这样的配置文件，把我们自己的Bean的依赖关系描述出来，然后让容器来创建并装配Bean。一旦容器初始化完毕，我们就直接从容器中获取Bean使用它们。
 
@@ -186,7 +190,7 @@ public class User {
 
 我们把上一节的示例改造一下，先删除XML配置文件，然后，给`UserService`和`MailService`添加几个注解。
 
-首先，我们给`MailService`添加一个`@Component`注解：
+**首先**，我们给`MailService`添加一个`@Component`注解：
 
 ```java
 @Component
@@ -197,7 +201,7 @@ public class MailService {
 
 这个`@Component`注解就相当于定义了一个Bean，它有一个可选的名称，默认是`mailService`，即小写开头的类名。
 
-然后，我们给`UserService`添加一个`@Component`注解和一个`@Autowired`注解：
+**然后**，我们给`UserService`添加一个`@Component`注解和一个`@Autowired`注解：
 
 ```java
 @Component
@@ -225,9 +229,9 @@ public class UserService {
 
 我们一般把`@Autowired`写在字段上，通常使用package权限的字段，便于测试。
 
-**最后，**
 
-### **编写一个`AppConfig`类启动容器：**
+
+**最后** 编写一个`AppConfig`类启动容器：
 
 ```java
 @Configuration
@@ -246,13 +250,24 @@ public class AppConfig {
 
 除了`main()`方法外，`AppConfig`标注了`@Configuration`，表示它是一个配置类，因为我们创建`ApplicationContext`时：
 
-```
+```java
 ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 ```
 
 使用的实现类是`AnnotationConfigApplicationContext`，必须传入一个标注了`@Configuration`的类名。
 
-此外，`AppConfig`还标注了`@ComponentScan`，它告诉容器，自动搜索当前类所在的包以及子包，把所有标注为`@Component`的Bean自动创建出来，并根据`@Autowired`进行装配。
+此外，`AppConfig`还标注了`@ComponentScan`，它告诉容器，
+
+- **1, 自动搜索当前类所在的包以及子包**，
+
+- **2, 也可以通过配置扫描路径来 搜索指定路径下的component**
+  **@ComponentScan(com.itranswarp.learnjava)**
+
+把所有标注为`@Component`的Bean自动创建出来，并**根据`@Autowired`进行装配。**
+
+
+
+### 1-2 常用工程结构
 
 整个工程结构如下：
 
@@ -278,13 +293,26 @@ spring-ioc-annoconfig
 - 配置类被标注为`@Configuration`和`@ComponentScan`；
 - 所有Bean均在指定包以及子包内。
 
-使用`@ComponentScan`非常方便，但是，我们也要特别注意包的层次结构。**通常来说，启动配置`AppConfig`位于自定义的顶层包****（例如`com.itranswarp.learnjava`），**其他Bean按类别放入子包**。
+使用`@ComponentScan`非常方便，但是，我们也要特别注意包的层次结构。
+
+- 通常来说，启动配置`AppConfig`位于自定义的顶层包（例如`com.itranswarp.learnjava`），其他Bean按类别放入子包。
 
 
 
+### 1-3 ComponentScan(xxx.xxx)// 还可以指定要扫描的包路径，此时配置类的位置可以随便放
 
-
-
+```java
+@Configuration
+@ComponentScan(xxx.xxx)// 还可以指定要扫描的包路径，此时配置类的位置可以随便放
+public class AppConfig {
+    public static void main(String[] args) {
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        UserService userService = context.getBean(UserService.class);
+        User user = userService.login("bob@example.com", "password");
+        System.out.println(user.getName());
+    }
+}
+```
 
 
 
@@ -414,25 +442,11 @@ public class MyTest {
 }
 ```
 
+# 三， < context:annotation-config/>与< context:component-scan/> 的区别
 
+- < context:annotation-config/>注册了常用的BeanPostProcessor，而这些BeanPostProcessor 就是让常用注解（@AutoWired、@Configuration）生效。
 
-
-
-![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7JicnvW4708YZgXPQAcr3JTia8Y39JMY2G6jbR5C8NP2ecF7ocDpwNU2XeCHKga62ToC8SKrbGnJRiaw/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-视频同步更新
-
-如果觉得帮助到了您，不妨赞赏支持一下吧！
-
-![图片](https://mmbiz.qpic.cn/mmbiz_jpg/uJDAUKrGC7KaCZTnzpTQ4y0unN9icJaRPdGy06vUfzQgzpibBctoiaZbTiaVibavlK6Ww0OIavHmSBf5luzDibthmgBA/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
-
-![图片](data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==)
-
-喜欢此内容的人还喜欢
-
-[这个证价值二三十万，蕲春农村家家都有！这个证价值二三十万，蕲春农村家家都有！...蕲阳号外不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[打HPV疫苗前，必须了解的保命知识！必须！打HPV疫苗前，必须了解的保命知识！必须！...仙姆SamChak不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)[Service 层和 Dao 层有必要为每个类都加上接口吗？Service 层和 Dao 层有必要为每个类都加上接口吗？...Java知音不喜欢不看的原因确定内容质量低 不看此公众号](javascript:void(0);)
-
-![img](https://mp.weixin.qq.com/mp/qrcode?scene=10000004&size=102&__biz=Mzg2NTAzMTExNg==&mid=2247484119&idx=1&sn=fbb37058fee2d9a7bc9a12314030c817&send_time=)
-
-微信扫一扫
-关注该公众号
+- < context:component-scan/> 做了< context:annotation-config/>所有做的事，除此之外，还扫描注册base-package下的类。
+  ————————————————
+  版权声明：本文为CSDN博主「QQ_851228082」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+  原文链接：https://blog.csdn.net/wangjun5159/article/details/82431271

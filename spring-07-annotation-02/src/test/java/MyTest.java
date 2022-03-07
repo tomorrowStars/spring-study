@@ -1,6 +1,7 @@
 import com.kuang.AppConfig;
 import com.kuang.config.MyConfig;
 import com.kuang.config.MyConfig2;
+import com.kuang.config.MyConfig3;
 import com.kuang.pojo.Cat;
 import com.kuang.pojo.Dog;
 import com.kuang.pojo.User;
@@ -53,6 +54,7 @@ public class MyTest {
      * @Configuration
      * @Import(AppConfig.class)    // 导入合并其他配置类，类似于配置文件中的 inculde 标签
      * 创建第三方bean
+     * @Import(AppConfig.class)    // 导入合并其他配置类，类似于配置文件中的 inculde 标签
      */
     @Test
     public void test03() {
@@ -64,5 +66,18 @@ public class MyTest {
 
         User user = context.getBean(User.class);
         System.out.println(user.toString());
+    }
+
+    /**
+     * @Configuration
+     * @ComponentScan("com.kuang.pojo")
+     * 扫描指定的包
+     */
+    @Test
+    public void test04() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig3.class);
+        Dog dog = context.getBean(Dog.class);
+        dog.shout();
+
     }
 }

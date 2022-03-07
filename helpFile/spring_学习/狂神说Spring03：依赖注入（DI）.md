@@ -12,15 +12,21 @@
 
 Dependency Injection
 
+# 一：概念
+
 > 概念
 
 - 依赖注入（Dependency Injection,DI）。
 - 依赖 : 指Bean对象的创建依赖于容器 . Bean对象的依赖资源 .
 - 注入 : 指Bean对象所依赖的资源 , 由容器来设置和装配 .
 
+# 二：构造器注入
+
 > 构造器注入
 
 我们在之前的案例已经讲过了
+
+# 三：Set 注入 （重点）
 
 > Set 注入 （重点）
 
@@ -30,7 +36,7 @@ Dependency Injection
 
 Address.java
 
-```
+```java
  public class Address {
  
      private String address;
@@ -47,7 +53,7 @@ Address.java
 
 Student.java
 
-```
+```java
  package com.kuang.pojo;
  
  import java.util.List;
@@ -120,9 +126,9 @@ Student.java
  }
 ```
 
-1、**常量注入**
+## 1、**常量注入**
 
-```
+```xml
  <bean id="student" class="com.kuang.pojo.Student">
      <property name="name" value="小明"/>
  </bean>
@@ -130,7 +136,7 @@ Student.java
 
 测试：
 
-```
+```java
  @Test
  public void test01(){
      ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -142,11 +148,11 @@ Student.java
  }
 ```
 
-2、**Bean注入** 
+## 2、**Bean注入** 
 
 注意点：这里的值是一个引用，ref
 
-```
+```xml
  <bean id="addr" class="com.kuang.pojo.Address">
      <property name="address" value="重庆"/>
  </bean>
@@ -157,9 +163,9 @@ Student.java
  </bean>
 ```
 
-3、**数组注入**
+## 3、**数组注入**
 
-```
+```xml
  <bean id="student" class="com.kuang.pojo.Student">
      <property name="name" value="小明"/>
      <property name="address" ref="addr"/>
@@ -173,9 +179,9 @@ Student.java
  </bean>
 ```
 
-4、**List注入**
+## 4、**List注入**
 
-```
+```xml
  <property name="hobbys">
      <list>
          <value>听歌</value>
@@ -185,9 +191,9 @@ Student.java
  </property>
 ```
 
-5、**Map注入**
+## 5、**Map注入**
 
-```
+```xml
  <property name="card">
      <map>
          <entry key="中国邮政" value="456456456465456"/>
@@ -196,9 +202,9 @@ Student.java
  </property>
 ```
 
-6、**set注入**
+## 6、**set注入**
 
-```
+```xml
  <property name="games">
      <set>
          <value>LOL</value>
@@ -208,15 +214,15 @@ Student.java
  </property>
 ```
 
-7、**Null注入**
+## 7、**Null注入**
 
-```
+```xml
  <property name="wife"><null/></property>
 ```
 
-8、**Properties注入**
+## 8、**Properties注入**
 
-```
+```xml
  <property name="info">
      <props>
          <prop key="学号">20190604</prop>
@@ -230,11 +236,19 @@ Student.java
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/uJDAUKrGC7K5cyS8ZRTpajtSInicNHbMYGHEFnrCA8Jyr6ian5MWrUHtnKBpYYTTtysbp5UPYKQxSiaUHJibPKlicuQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
+# 四：p命名和c命名注入
+
 > p命名和c命名注入
+>
+> - P : Set 注入
+>
+> - C: 就是所谓的构造器注入
+
+
 
 User.java ：【注意：这里没有有参构造器！】
 
-```
+```java
  public class User {
      private String name;
      private int age;
@@ -259,7 +273,7 @@ User.java ：【注意：这里没有有参构造器！】
 
 1、P命名空间注入 : 需要在头文件中加入约束文件
 
-```
+```xml
  导入约束 : xmlns:p="http://www.springframework.org/schema/p"
  
  <!--P(属性: properties)命名空间 , 属性依然要设置set方法-->
@@ -268,7 +282,7 @@ User.java ：【注意：这里没有有参构造器！】
 
 2、c 命名空间注入 : 需要在头文件中加入约束文件
 
-```
+```xml
  导入约束 : xmlns:c="http://www.springframework.org/schema/c"
  <!--C(构造: Constructor)命名空间 , 所谓的构造器注入-->
  <bean id="user" class="com.User" c:name="狂神" c:age="18"/>
@@ -280,7 +294,7 @@ User.java ：【注意：这里没有有参构造器！】
 
 测试代码：
 
-```
+```java
  @Test
  public void test02(){
      ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -307,7 +321,7 @@ User.java ：【注意：这里没有有参构造器！】
 </beans>
 ```
 
-
+# 四：Bean的作用域
 
 > Bean的作用域
 
@@ -321,13 +335,13 @@ User.java ：【注意：这里没有有参构造器！】
 
 当一个bean的作用域为Singleton，那么Spring IoC容器中只会存在一个共享的bean实例，并且所有对bean的请求，只要id与该bean定义相匹配，则只会返回bean的同一实例。Singleton是单例类型，就是在创建起容器时就同时自动创建了一个bean的对象，不管你是否使用，他都存在了，每次获取到的对象都是同一个对象。注意，Singleton作用域是Spring中的缺省作用域。要在XML中将bean定义成singleton，可以这样配置：
 
-```
+```xml
  <bean id="ServiceImpl" class="cn.csdn.service.ServiceImpl" scope="singleton">
 ```
 
 测试：
 
-```
+```java
  @Test
  public void test03(){
      ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -341,7 +355,7 @@ User.java ：【注意：这里没有有参构造器！】
 
 当一个bean的作用域为Prototype，表示一个bean定义对应多个对象实例。Prototype作用域的bean会导致在每次对该bean请求（将其注入到另一个bean中，或者以程序的方式调用容器的getBean()方法）时都会创建一个新的bean实例。Prototype是原型类型，它在我们创建容器的时候并没有实例化，而是当我们获取bean的时候才会去创建一个对象，而且我们每次获取到的对象都不是同一个对象。根据经验，对有状态的bean应该使用prototype作用域，而对无状态的bean则应该使用singleton作用域。在XML中将bean定义成prototype，可以这样配置：
 
-```
+```xml
  <bean id="account" class="com.foo.DefaultAccount" scope="prototype"/>  
   或者
  <bean id="account" class="com.foo.DefaultAccount" singleton="false"/>
@@ -351,7 +365,7 @@ User.java ：【注意：这里没有有参构造器！】
 
 当一个bean的作用域为Request，表示在一次HTTP请求中，一个bean定义对应一个实例；即每个HTTP请求都会有各自的bean实例，它们依据某个bean定义创建而成。该作用域仅在基于web的Spring ApplicationContext情形下有效。考虑下面bean定义：
 
-```
+```xml
  <bean id="loginAction" class=cn.csdn.LoginAction" scope="request"/>
 ```
 
@@ -361,7 +375,7 @@ User.java ：【注意：这里没有有参构造器！】
 
 当一个bean的作用域为Session，表示在一个HTTP Session中，一个bean定义对应一个实例。该作用域仅在基于web的Spring ApplicationContext情形下有效。考虑下面bean定义：
 
-```
+```xml
  <bean id="userPreferences" class="com.foo.UserPreferences" scope="session"/>
 ```
 

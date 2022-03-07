@@ -8,12 +8,13 @@
        https://www.springframework.org/schema/context/spring-context.xsd">
 
     <!--需要导入 spring-aop的包！-->
+    <!--开启对java代码上的注解的支持-->
     <context:annotation-config/>
 
    <!-- @Autowired是按类型自动转配的，不按id匹配。-->
-    <bean id="cat111" class="com.kuang.pojo.Cat"/>
+    <bean id="cat" class="com.kuang.pojo.Cat"/>
 <!--    没有和 注入类型名【cat】一致的id的bean时， 不能定义多个该类型的bean，加上@Qualifier则可以-->
-<!--    <bean id="cat22" class="com.Cat"/>-->
+    <bean id="cat22" class="com.kuang.pojo.Cat"/>
 
 <!--    加上@Qualifier则可以根据byName的方式自动装配-->
     <bean id="dog11" class="com.kuang.pojo.Dog"/>

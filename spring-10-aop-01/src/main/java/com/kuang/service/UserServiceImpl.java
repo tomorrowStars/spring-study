@@ -2,8 +2,9 @@ package com.kuang.service;
 
 public class UserServiceImpl implements UserService {
 
-    public void add() {
+    public int add() {
         System.out.println("增加了一个用户");
+        return 1;
     }
 
     public int delete() {

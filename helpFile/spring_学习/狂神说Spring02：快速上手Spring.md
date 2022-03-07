@@ -16,13 +16,13 @@ Hello，Spring
 
 上一期中我们理解了IOC的基本思想，我们现在来看下Spring的应用：
 
-## HelloSpring
+## 一： HelloSpring
 
 > 导入Jar包
 
 注 : spring 需要导入commons-logging进行日志记录 . 我们利用maven , 他会自动下载对应的依赖项 .
 
-```
+```xml
 <dependency>
    <groupId>org.springframework</groupId>
    <artifactId>spring-webmvc</artifactId>
@@ -34,7 +34,7 @@ Hello，Spring
 
 1、编写一个Hello实体类
 
-```
+```java
 public class Hello {
    private String name;
 
@@ -53,7 +53,7 @@ public class Hello {
 
 2、编写我们的spring文件 , 这里我们命名为beans.xml
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -70,7 +70,7 @@ public class Hello {
 
 3、我们可以去进行测试了 .
 
-```
+```java
 @Test
 public void test(){
    //解析beans.xml文件 , 生成管理相应的Bean对象
@@ -105,7 +105,7 @@ public void test(){
 
 我们在案例一中， 新增一个Spring配置文件beans.xml
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -126,7 +126,7 @@ public void test(){
 
 测试！
 
-```
+```java
 @Test
 public void test2(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -141,7 +141,7 @@ OK , 到了现在 , 我们彻底不用再程序中去改动了 , 要实现不同
 
 
 
-## IOC创建对象方式
+## 二：IOC创建对象方式
 
 
 
@@ -149,7 +149,7 @@ OK , 到了现在 , 我们彻底不用再程序中去改动了 , 要实现不同
 
 1、User.java
 
-```
+```java
 public class User {
 
    private String name;
@@ -171,7 +171,7 @@ public class User {
 
 2、beans.xml
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -187,7 +187,7 @@ public class User {
 
 3、测试类
 
-```
+```java
 @Test
 public void test(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -206,7 +206,7 @@ public void test(){
 
 1、UserT . java
 
-```
+```java
 public class UserT {
 
    private String name;
@@ -228,7 +228,7 @@ public class UserT {
 
 2、beans.xml 有三种方式编写
 
-```
+```xml
 <!-- 第一种根据index参数下标设置 -->
 <bean id="userT" class="com.kuang.pojo.UserT">
    <!-- index指构造方法 , 下标从0开始 -->
@@ -247,7 +247,7 @@ public class UserT {
 
 3、测试
 
-```
+```java
 @Test
 public void testT(){
    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
@@ -258,20 +258,20 @@ public void testT(){
 
 结论：在配置文件加载的时候。其中管理的对象都已经初始化了！
 
-## Spring配置
+## 三：Spring配置
 
 > 别名
 
 alias 设置别名 , 为bean设置别名 , 可以设置多个别名
 
-```
+```xml
 <!--设置别名：在获取Bean的时候可以使用别名获取-->
 <alias name="userT" alias="userNew"/>
 ```
 
 > Bean的配置
 
-```
+```xml
 <!--bean就是java对象,由Spring创建和管理-->
 
 <!--
@@ -291,7 +291,7 @@ class是bean的全限定名=包名+类名
 
 团队的合作通过import来实现 .
 
-```
+```xml
 <import resource="{path}/beans.xml"/>
 ```
 

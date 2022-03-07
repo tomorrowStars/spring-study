@@ -7,10 +7,12 @@
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop.xsd">
 
+<!--    被切入的对象-->
     <bean id="userServiceImpl" class="com.kuang.service.UserServiceImpl"/>
-    <bean id="log" class="com.kuang.service.Log"/>
-    <bean id="afterLog" class="com.kuang.service.AfterLog"/>
-
+<!--    1,Spring API 实现-->
+<!--    <bean id="log" class="com.kuang.service.Log"/>-->
+<!--    <bean id="afterLog" class="com.kuang.service.AfterLog"/>-->
+<!--    2,自定义类来实现Aop-->
     <bean id="diyPointCut" class="com.kuang.service.DiyPointCut"/>
 
     <aop:config >
