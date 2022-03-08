@@ -15,7 +15,8 @@ public class MyTest12_02 {
     @Test
     public void test01() {
         ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-        UserDao userDao = context.getBean("userDao",UserDaoImpl.class);
+//        UserDao userDao = context.getBean("userDao",UserDaoImpl.class);
+        UserDao userDao = context.getBean("userDao",UserDao.class);
         List<User> allUsers = userDao.getAllUsers();
         for (User user : allUsers) {
             System.out.println(user);

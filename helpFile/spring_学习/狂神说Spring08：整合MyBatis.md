@@ -488,9 +488,19 @@ public class UserDaoImpl implements UserMapper {
         <constructor-arg index="0" ref="sessionFactory"/>
     </bean>
 
+<!--    方式1-->
     <bean id="userDao" class="com.kuang.dao.UserDaoImpl">
-        <property name="sqlSession" ref="sqlSession"/>
+        <property name="sqlSession" ref="sqlSessionTemplate"/>
 <!--        <constructor-arg index="0" value="sessionTemplate"/>-->
+    </bean>
+
+<!--    方式2 ；可以不用写DaoImpl-->
+    <!-- 4.配置扫描Dao接口包，动态实现Dao接口注入到spring容器中 可以不用写DaoImpl -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- 注入sqlSessionFactory -->
+        <property name="sqlSessionFactoryBeanName" value="sessionFactory"/>
+        <!-- 给出需要扫描Dao接口包 -->
+        <property name="basePackage" value="com.kuang.dao"/>
     </bean>
 </beans>
 ```
